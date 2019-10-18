@@ -474,3 +474,6 @@ TSWLatexianTemp*
 # Makeindex log files
 *.lpz
 
+Datasets/
+.idea/
+Pictures/

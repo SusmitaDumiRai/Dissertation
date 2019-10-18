@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+
+\setlength{\parskip}{\baselineskip}%
+\setlength{\parindent}{0pt}%
+
+\begin{document}
+
+\title{Machine learning on network analysis}
+\author{Susmita Rai - 908928}
+\date{}
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+With the rapid expansion of the Internet, it has become an essential part of our lives with over half the population connected \cite{wearesocial}. However, this results in an increasingly complex and fragile network. Many systems are left vulnerable, waiting to be exploited. By 2021, it is predicted that cost of cyber-attacks will reach \$6 trillion \cite{varonis}. The importance of a good and secure security system is far too crucial.
+
+“Offensive cyber capabilities are developing more rapidly than our ability to deal with hostile incidents” \cite{globalrisks}. Attacks are becoming smarter, polymorphic viruses and obscured malwares are passing through current systems. Over a third of organizations believe that the threats they are facing cannot be blocked by their anti-virus \cite{varonis}. 
+Due to our rapid growth, we have left many openings for an attack, one of them is through the network. Our need for constantly being connected is causing a major gap in security. In 2017, 8 different network attacks dominated the market \cite{network-attack-types}.
+
+\begin{enumerate}
+  \item Browser attacks - malicious users target vulnerable websites to infect, infecting new genuine users. 
+  \item Brute force attack - attempting to guess your way through to the system. 
+  \item Denial of service (DoS) or Distributed Denial of Service (DDoS) – flooding a service by creating many requests in order to slow or crash the system.
+  \item Worm attacks – self propagating program that spreads through local system through exploitable vulnerabilities.
+  \item Malware attacks – programs that can take many forms, however their purpose is always malicious.
+  \item Web attacks – exploiting vulnerabilities found in the website such as SQL injection.
+  \item Scan attacks – indirect attack to gain knowledge of any vulnerabilities that exist such as an open port. 
+  \item Other attacks – attacks that were out of scope, such as physically attempting to steal device.
+\end{enumerate}
+
+Fortunately, methods such as Intrusion detection system (IDS) exist to deter most of these attacks. IDS constantly scan the network for any anomalous activity in the network. Some are even capable of stopping the attack completely rather than just alerting the user. 
+
+However, IDS face many issues such as explaining what an anomaly is in the first place. Robustness and accuracy also come into question. How often does an IDS system report false negatives or how many different types of malwares can they detect?
+
+By using machine learning it is possible to overcome these problems. Its ability of learning patterns and understanding different classifications can assist IDS. \textcolor{red}{Todo add more here about machine learning. and what i want to do}
+
+I aim to create a system that can detect malwares on a network, and also test its robustness and accuracy rates. \textcolor{red}{todo think more about this}
+
+\section{Project aims}
+
+
+\newpage
+\bibliography{ml-security-diss}
+\bibliographystyle{unsrt}
+\end{document}
