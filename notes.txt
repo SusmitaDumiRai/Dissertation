@@ -1,0 +1,7 @@
+aim:
+
+a lot of work is done on network malware detection however is it possible to
+confuse it. this is hopefully what i will aim towards, by synthesizing fake network
+packets that make it seem like an attack has happened when in reality it is just a fake.
+able to test integrity of current malware detection systems.
+
