@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{cite}
+\usepackage[hyphens]{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{subcaption}
@@ -14,13 +15,13 @@
 \author{Susmita Rai - 908928}
 \date{}
 \maketitle
-
 \newpage
+
 \pagenumbering{arabic}
 \tableofcontents
 \newpage
 
-\setlength{\parskip}{1em}
+\setlength{\parskip}{0.5em}
 
 \section{Project definition}
 \subsection{Introduction}
@@ -76,28 +77,6 @@ There are several different ways accomplish this. Below is list of steps I will 
    With the usage of GANNs, more realistic synthetic malware data can be generated which in turn tests IDS systems. An almost infinite training loop could be created to train IDS systems to learn the correct patterns of malware which should make the system more robust. 
   \end{enumerate}  
 \end{enumerate}
-
-\newpage
-\section{Related work}
-\textcolor{red}{i dont fully understand whats supposed to be here}
-
-The hunt for a high true positive with low false positive IDS system has been sought for a while. Variety of different algorithms have been implemented in order to find one true solution. 
-
-Most attacks have a certain pattern that they follow resulting in two main approaches \cite{related-work-main-approaches}. Anomaly detection and signature-based detection. Given a normal day-to-day activity, if a deviation occurs then that is recorded as an anomaly. That is the rule that anomaly detectors follow. Whereas for signature-based detection, it’s based on the fact that an attack has a known pattern. If a known pattern is detected, there must have been an attack.
-
-However, they both fall short. If a day-to-day activity is malicious, anomaly detectors will fail to flag it. Whereas for misuse detectors, the rise of polymorphic and obfuscated malwares is rendering it useless \cite{related-work-main-approaches}.
-
-Nevertheless, many academics have implemented a range of different algorithms that attempts to detect malware. 
-
-One paper introduces a novel method for signature-based intrusion detection \cite{related-work-signature-based}. Creating an updating database that stores most frequent signatures to detect. The results show that the rate of false positives lowered, and malware detection speed increased. However, the database requires the administrator to choose whether signature is dangerous or not. Furthermore, other paper criticizes signature-based detection for its lack of ability to detect innovative malwares \cite{related-work-criticise-signature}. 
- 
-By utilizing data mining techniques such as Bayesian networks, to select features of importance, they were able to detect various attacks such as DOS with 100\% accuracy. Their accuracy did falter for other attacks such as User2Root at 84\%. \cite{related-work-main-approaches}.
-
-Further research has been done on applying algorithms that are capable of learning and understanding features on a massive scope. Genetic algorithms mixed with traditional algorithms resulted in lower false positives and false negatives \cite{related-work-criticise-signature}. 
-
-Unfortunately, even with many different implements, current IDS systems present different results for the same situation \cite{related-work-advantages-and-disadvantages}. Judging the results can also be difficult. IDS systems that have high true positive and low false positive rate could lead to a false sense of security, especially if the attacks are over a large portion of traffic \cite{related-work-advantages-and-disadvantages}.
-
-This shows that there’s progress still to make when implementing an IDS system that has high positive rate with low false positives. One that is also able to handle the constant face-paced changes of evolving malwares.
 
 \newpage
 \section{Project management}
@@ -177,6 +156,212 @@ The implementation section is split into two parts. There is an overall view of 
     \caption{Gantt chart}
     \label{fig:image10}
 \end{figure}
+
+\newpage
+\section{Understanding the project}
+\subsection{Related work}
+\textcolor{red}{i dont fully understand whats supposed to be here}
+
+The hunt for a high true positive with low false positive IDS system has been sought for a while. Variety of different algorithms have been implemented in order to find one true solution. 
+
+Most attacks have a certain pattern that they follow resulting in two main approaches \cite{related-work-main-approaches}. Anomaly detection and signature-based detection. Given a normal day-to-day activity, if a deviation occurs then that is recorded as an anomaly. That is the rule that anomaly detectors follow. Whereas for signature-based detection, it’s based on the fact that an attack has a known pattern. If a known pattern is detected, there must have been an attack.
+
+However, they both fall short. If a day-to-day activity is malicious, anomaly detectors will fail to flag it. Whereas for misuse detectors, the rise of polymorphic and obfuscated malwares is rendering it useless \cite{related-work-main-approaches}.
+
+Nevertheless, many academics have implemented a range of different algorithms that attempts to detect malware. 
+
+One paper introduces a novel method for signature-based intrusion detection \cite{related-work-signature-based}. Creating an updating database that stores most frequent signatures to detect. The results show that the rate of false positives lowered, and malware detection speed increased. However, the database requires the administrator to choose whether signature is dangerous or not. Furthermore, other paper criticizes signature-based detection for its lack of ability to detect innovative malwares \cite{related-work-criticise-signature}. 
+ 
+By utilizing data mining techniques such as Bayesian networks, to select features of importance, they were able to detect various attacks such as DOS with 100\% accuracy. Their accuracy did falter for other attacks such as User2Root at 84\%. \cite{related-work-main-approaches}.
+
+Further research has been done on applying algorithms that are capable of learning and understanding features on a massive scope. Genetic algorithms mixed with traditional algorithms resulted in lower false positives and false negatives \cite{related-work-criticise-signature}. 
+
+Unfortunately, even with many different implements, current IDS systems present different results for the same situation \cite{related-work-advantages-and-disadvantages}. Judging the results can also be difficult. IDS systems that have high true positive and low false positive rate could lead to a false sense of security, especially if the attacks are over a large portion of traffic \cite{related-work-advantages-and-disadvantages}.
+
+This shows that there’s progress still to make when implementing an IDS system that has high positive rate with low false positives. One that is also able to handle the constant face-paced changes of evolving malwares.
+
+\subsection{Background research}
+\textcolor{red}{is this right header?}
+
+\subsubsection{Language - Python 3}
+The entire purpose of this project is to create a system that can reliably detect malwares on a network \textcolor{red}{and generate synthetic malware patterns?}. To do this, I will be using Python 3 as it provides many native packages and resources that I can use.
+
+For machine learning, there is a variety of packages that has all the core functionalities already covered.
+
+\begin{enumerate}
+  \item{Tensorflow}
+
+  Tensorflow is a package that can perform high-end numerical computations \cite{bg-work-tensorflow} and can create neural networks. Manually implementing a neural network is another project on its own therefore I will use Tensorflow as it abstracts away all that work.
+
+  \item{Keras}
+
+  Keras is another machine learning framework that adds another layer of abstraction on top of Tensorflow. It also supports other machine learning packages such as Theano however for this project, I will be using it for Tensorflow. 
+
+  Keras makes it easier to implement models for neural network rather than using Tensorflow directly. Also, implementing custom functions such as loss, is easy to do with Keras.
+  \item{Scikit-Learn}
+
+  Another machine learning package that contains a multitude of functions such as clustering, regression and classification algorithms \cite{bg-work-tensorflow}. Instead of just neural networks, there are many other algorithms such as random forest, which Scikit supports.
+
+  \item{NumPy}
+
+  This provides a data structure known as NumPy that handles multidimensional array objects. It includes a vast range of methods on arrays that have quick execution time. This makes it easier to handle big data.
+
+  \item{Pandas}
+
+  Pandas is another package for handling big data. Data can be loaded directly into Python from various formats such as CSV easily with Pandas. It also contains various functions to handle complex data operations \cite{bg-work-tensorflow}.
+
+  \item{Matplotlib}
+
+  Every machine learning project starts out with visualizing the dataset. Matplotlib is a great tool that allows you to plot various charts easily. However, there are other visualization packages such as Seaborn which provides more functionalities. Although, they are all built on top of Matplotlib. When necessary I will use other visualization packages however Matplotlib provides the core functionalities.
+
+  Whereas if I were to implement my own exploit, Python again provides a lot of packages that are suitable for network communication. 
+\end{enumerate}
+
+Whereas if I were to implement my own exploit, Python again provides a lot of packages that are suitable for network communication. 
+
+\begin{enumerate}
+  \item{Scapy}
+
+  Scapy is a package that allows manipulation of network packets. It provides the utility capable from tools such as Wireshark \cite{bg-work-pentesting-lib} and more. Aside from the norm such as scanning packets, Scapy also allows the ability to create attacks such as ARP poisoning. It is a powerful tool with a simple user interface.
+
+  \item{Socket}
+  
+  This is a low-level networking interface provided by Python. Socket provides the full functionality for network communication however there are many other packages such as Scapy that is easier to use. But most of these packages, including Scapy have Socket as their underlying tool.
+
+  \item{Virtualenv}
+
+  This is a native Python package where the user can create secluded Python environments. Any experiments I perform will only exist in that virtual environment, ensuring no clashes of packages. Furthermore, there are many Python versions and many packages, if a package that is necessary is not supported by my version of Python, virtualenv makes it easy to switch.  
+\end{enumerate}
+
+\subsubsection{IDE - PyCharm \& Jupyter Notebook}
+There are also various integrated development environments (IDE) that work with Python. But for this project I will be mostly using PyCharm by JetBrains. PyCharm comes with an integrated visual debugger, a built-in terminal and version control support for Git. It also has a scientific version which is made for projects that use scientific packages such as NumPy.
+
+Whilst I will do most of my development in PyCharm, I will also use Jupyter notebook. This is a web application that allows you to code in your browser. It is create for creating a presentation or writing small snippets of useful code down. 
+
+\subsubsection{Dataset selection}
+Data drives machine learning. Immense amounts of data have been collected, ready to be analysed however it is lacking for cyber security, especially for network analysis. Creating a network dataset that is unbiased and realistic proves to be a difficult challenge \cite{bg-dataset-selection}. Unfortunately, the initial step would be finding a suitable dataset. Despite the issues with collecting network data, there are still many public resources available. 
+
+I have identified four different datasets that could be suitable for this task. Since they are all large, its impossible to understand what information they have without visualizing the data. I chose a subset of the data for each dataset and only few attributes to visualize. There are techniques available to learn what features are important however since this was just preliminary work, I did not delve deep. Also, since I was using only a subset, the analysis could have been misleading and/or important data were missing.
+
+\begin{enumerate}
+  \item{GT Malware netflow}
+
+  This is an ongoing project by Georgia Tech (GT) \cite{bg-dataset-gt} where they are collecting a daily network feed in an isolated environment. Specific programs are executed for short period of time and recorded. However, the programs executed are not specified, only the network activity is just logged using nfcapd. 
+
+  Before I could visualize this dataset, all files had to be converted from nfcapd to CSV. By using the same tool that produces nfcapd files, NFDump, I generated the CSV files. However strangely, the CSV produced had extra attributes which did not exist in the original nfcapd file. All values for the extra attributes were set to zero, which I am therefore assuming were just default attributes that were not recorded by GT.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{\linewidth}
+      \includegraphics[width=\linewidth]{Pictures/gt-1".png}
+    \end{subfigure}
+    \begin{subfigure}{\linewidth}
+      \includegraphics[width=\linewidth]{"Pictures/gt-2".png}
+    \end{subfigure}
+    \caption{GT Malware netflow visualisation}
+    \label{fig:gt-graph}
+\end{figure}
+
+  For this dataset, I decided to visualize the number of incoming bytes against a certain time period which resulted in figure \ref{fig:gt-graph}. It shows clearly that at 17H30M20S there was a spike of incoming data. There are also many periods where there is very little network activity happening. However, since the chart is so biased against the maximum incoming bytes, if the incoming bytes were very frequent but small, it would not show as clearly. Also, there could have been duplicate time entries but only the maximum value would have been displayed. Therefore, I also created a histogram of incoming bytes with bins of 5-minutes time entries.
+
+  The histogram showed that there were a lot of activity happening in time period before and after the spike which were just hidden. 
+Finally, I drew a pie chart to show what type of protocol were being used the most. This was to see what kind of network data was being passed around. Some protocols are also more vulnerable than others. 
+ 
+\begin{figure}[h!]
+   \includegraphics[width=\linewidth, height=7cm, keepaspectratio]{"Pictures/gt-pie".png}
+   \caption{Frequency of protocols}
+   \label{fig:gt-pie}
+\end{figure}
+
+  Finally, I drew a pie chart (figure \ref{fig:gt-pie}) to show what type of protocol were being used the most. This was to see what kind of network data was being passed around. Some protocols are also more vulnerable than others. 
+
+  \item{Computer network traffic }
+
+  This dataset is relatively small compared to others consisting of only ~500k lines and 4 features \cite{bg-dataset-net-traffic}. In this dataset, 10 local workstations were monitored over 3 months period and half of these became compromised and were part of a botnet. 
+
+  Since there weren’t many attributes to visualize, I went with the easiest one – “flow” which is the number of connections for that given day. 
+
+  Figure \ref{fig:com-net-flow} clearly shows one machine number 4 had been compromised in September. However, that was for only one machine, there are still others to find. The Y axis again was very biased towards the max value, I decided to set a limit to the Y axis to make it easier to see the traffic for other machines
+
+\begin{figure}[h!]
+   \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/computer-network-traffic-1".png}
+   \caption{Flow vs time}
+   \label{fig:com-net-flow}
+\end{figure}
+
+  \item{Malicious and benign websites}
+
+  This dataset is different to the rest since it does not deal with network traffic. I was mostly just curious as what this dataset contained.
+  
+  This dataset contains a list of attributes about a website along with a label that says whether it is malicious or not \cite{bg-dataset-websites}. 
+
+  Since the dataset is labelled, there are different techniques to visualize the dataset. I drew a normalized boxplot (figure \ref{fig:websites-boxplot}) to start off with to see if there were any outliers. Since the dataset contained both categorical and numerical data, I just plotted the numerical information. There are methods to convert categorical to numerical such as one hot encoding however I did not do it for this dataset. This graph clearly shows that there are various outliers that do not fit the rest, some are very prominent compared to others.
+
+\begin{figure}[h!]
+   \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/malicious-benign-websites-1".png}
+   \caption{Boxplot of numerical features}
+   \label{fig:websites-boxplot}
+\end{figure}
+
+  I also drew a correlation graph (figure \ref{fig:websites-corre}) since it can easily show what attributes are responsible for indicating that a website is malicious or not. However, its normally a set of features that indicate whether a website is malicious or not, not just one. Unforunately the correlation graph is unable to show this.
+
+\begin{figure}[t!]
+   \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/malicious-benign-websites-2".png}
+   \caption{Correlation matrix}
+   \label{fig:websites-corre}
+\end{figure}
+
+\newpage
+  \item{AWS Cyber defense }
+  
+  For my final dataset I choose AWS Cyber defense. This dataset contains network traffic of 420 PCs and 30 servers which were victims to 7 different attacks such as DDoS \cite{bg-dataset-aws}. All network traffic is labelled with its respective attack. This is also the biggest dataset; its raw size comes up to 220gb or 7gb of CSV. 
+
+  Similarly, to benign and malicious websites I drew a boxplot (figure \ref{fig:aws-boxplot} followed by a correlation (figure \ref{fig:aws-corre}) to visualize it quickly instead of choosing certain features. However, this time the label was categorical therefore I had to convert it to numerical value by encoding it. Also, instead of plotting just raw data, I drew the boxplot using the correlation data. 
+
+\begin{figure}[t!]
+   \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/aws-1".png}
+   \caption{Boxplot of numerical correlation features}
+   \label{fig:aws-boxplot}
+\end{figure}
+
+\begin{figure}[p!]
+   \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/aws-2".png}
+   \caption{Correlation matrix}
+   \label{fig:aws-corre}
+\end{figure}
+\end{enumerate}
+
+There were many other datasets to choose from, a notable one is KDDCUP99 \cite{bg-dataset-kdd99} which was the first “good” network dataset. However, the dataset is quite old therefore I decided not to use it. 
+
+After discussing with experts in the field, I decided to use AWS cyber defense dataset. This is because of many factors, the first being that it is labelled. Instead of attempting to cluster data to find anomalies, the data is already clustered to say whether an attack happened or not. Furthermore, there are various attacks in this dataset, not just one, which will help me create a more robust system. 
+
+However, this dataset is quite tricky in the sense that it is bigger than rest. There will have to be management of big data. Also, more classifications can make it harder. The model may perform well in one classification but fail for the rest, fine tuning parameters without affecting the good results will be difficult. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
