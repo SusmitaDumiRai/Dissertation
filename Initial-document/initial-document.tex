@@ -2,6 +2,7 @@
 \usepackage{cite}
 \usepackage[hidelinks]{hyperref}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{xcolor}
 
 \renewcommand{\labelenumii}{\theenumii}
@@ -41,44 +42,38 @@ Due to our rapid growth, we have left many openings for an attack, one of them i
 
 Fortunately, methods such as Intrusion detection system (IDS) exist to deter most of these attacks. IDS constantly scan the network for any anomalous activity in the network. Some are even capable of stopping the attack completely rather than just alerting the user. 
 
-However, IDS face many issues such as explaining what an anomaly is in the first place. Robustness and accuracy also come into question. How often does an IDS system report false negatives or how many different types of malwares can they detect?
+However, IDS face many issues such as explaining what an anomaly is in the first place. Robustness and accuracy also come into question. How often does an IDS system report false negatives or how many different types of malwares can they detect? 
 
-By using machine learning it is possible to overcome these problems. Its ability of learning patterns and understanding different classifications can assist IDS. \textcolor{red}{Todo add more here about machine learning. and what i want to do}
-
-I aim to create a system that can detect malwares on a network, and also test its robustness and accuracy rates. \textcolor{red}{todo think more about this}
+By using machine learning it is possible to overcome these problems because of its ability to learn patterns and understand different classifications. As malware evolve, the system can also be retrained to learn new patterns of attack. Because of this, I aim to create a robust system that is capable of detecting malwares using using machine learning.
 
 \subsection{Project aims}
-This project aims to create a system that can detect malware on a network by incorporating machine learning to enforce security on the network. There are multiple steps that are required with possible extension.
+The project aims to create a system that can detect malware on a network by incorporating machine learning. The system should be able to classify a wide range of malwares accurately whilst having a low false positive rate. 
 
-Data drives machine learning. Immense amounts of data have been collected, ready to be analysed however it is lacking for cyber security, especially for network analysis. Creating a network dataset that is unbiased and realistic proves to be a difficult challenge \cite{dataset-evaluation}. Unfortunately, the initial step would be finding a suitable dataset. Despite the issues with collecting network data, there are still many public resources available. 
-
-A note to consider is that I have already chosen a dataset which I will expand more under initial work. This is because the entire project depends on the dataset therefore, I had to choose a dataset before the project started. 
-
-There are several objectives that I would like to fulfill with this project. 
+There are several different ways accomplish this. Below is list of steps I will take to approach this problem with several extensions that I would like to do, given time constraints and my own ability. 
 
 \begin{enumerate}
-  \item Develop a system capable of classifying different malwares using machine learning. 
+  \item Develop a system capable of classifying different malwares. 
   
-  All IDS systems can detect anomalous activity. This would attempt to create an IDS system using machine learning techniques. The malwares would be anomalies that need to be detected.
+ This would be the foundation for all solutions to other problems. It would attempt to create an IDS system using machine learning techniques to detect anomalies, in this case malwares. Also, it aids to not only understand the dataset but the behaviour of malwares as well. 
 
   \item Create synthetic malware attack patterns
 
-  This depends heavily on the results of step 1. If the system can detect malwares, then it must also learn the pattern of what makes a malware. This would allow me to create synthetic malware   attack patterns. Also, able to retrain classifier in step 1 to learn patterns of fake attacks creating a more secure IDS system.
+  This depends heavily on the results of step 1. If the system can detect malwares, then it can also learn the pattern of what makes a malware. This would allow creation of synthetic malware attack patterns. It is also possible to retrain the classifier in step 1 to be “smarter” against fake synthetic attacks which hopefully reduces the chances of a false positive, creating a smarter IDS system. 
 
   \begin{enumerate}
     \item{Replicate environment and create my own attacks}
 
-    Another possibility would also be to create actual malware attacks, not just synthetic. This would allow me to test the classifier on a live network rather than just on pre-collected data.
+   Another possibility I would like to do would be to create actual malware attacks, not just synthetic. Replicating the environment, the dataset was collected in, the classifier could be tested on a live network rather than just on a pre-collected dataset. 
   \end{enumerate}  
 
   \item Test robustness of available IDS with synthetic data.
 
-  If synthetic malware data is realistic enough, it would be able to fool IDS systems into thinking an attack has happened. \textcolor{red}{What is the point of this?}
+ The final step would be to test how well IDS systems work. If synthetic malware data is realistic enough, it would be able to fool IDS systems into thinking an attack has happened. It is then easy to test an IDS system’s reaction to such attacks. If the system flags such an attack, it shows that there is room for improvement. 
 
   \begin{enumerate}
     \item{Create genetic adversarial networks to create even more realistic synthetic malware data.}
 
-    By creating GANNs, more realistic synthetic malware data can be generated. Thus, a loop of constantly testing robustness of IDS in step 3. \textcolor{red}{Again, what is the point of this?}
+   With the usage of GANNs, more realistic synthetic malware data can be generated which in turn tests IDS systems. An almost infinite training loop could be created to train IDS systems to learn the correct patterns of malware which should make the system more robust. 
   \end{enumerate}  
 \end{enumerate}
 
@@ -111,9 +106,9 @@ For this project, I have chosen to use Scrum agile methodology because of its it
 
 Usually a daily Scrum takes place at the start of the day where the development team discuss the events of yesterday, however since I will be working alone, no daily Scrum will take place. Instead, a meeting with all other undergraduates under the same supervisor will take place every fortnight. This way everyone can discuss the progress of their respective projects.
 
-Whereas for sprints, I will create a meeting with my supervisor every fortnight, which will be the length of one sprint. Instead of having a different meeting for planning, review and retrospective, it will all be merged into one. By doing this, I will still be able to receive some feedback and talk about issues that are/may cause problems.
+Whereas for sprint meetings, I will create a meeting with my supervisor every fortnight, which will be the length of one sprint. Instead of having a different meeting for planning, review and retrospective, it will all be merged into one. By doing this, I will still be able to receive some feedback and talk about issues that are/may cause problems.
 
-Since I am the sole person working on this project, I will be responsible for creating a product and sprint backlog. Tasks will be broken down into separate categories, such as “todo” or “in-progress”. Each task will also be assigned a priority ranging from “must haves” to “would be nice”. I will be using GitHub project board \cite{methodology-github-projects} or some alternative that is similar in order to create the task board. Having an online task board allows easy access wherever I am. 
+I will also be responsible for creating a product and sprint backlog. Tasks will be broken down into separate categories, such as “todo” or “in-progress”. Each task will also be assigned a priority ranging from “must haves” to “would be nice”. I will be using GitHub project board \cite{methodology-github-projects} or some alternative that is similar in order to create the task board. Having an online task board allows easy access wherever I am. 
 
 \begin{figure}[h!]
    \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/machine-learning-life-cycle".png}
@@ -121,7 +116,7 @@ Since I am the sole person working on this project, I will be responsible for cr
    \label{fig:ml-life-cycle}
 \end{figure}
 
-This methodology also ties in well with the structure for machine learning projects. The brunt of the work for machine learning projects is always at the start which is data processing. In this step, data must be prepared and cleaned such that it can be fed into a model. This is then followed by model training and finally model testing and evaluation. Figure \ref{fig:ml-life-cycle} displays the life cycle of machine learning projects \cite{methodology-ml-life-cycle}. Depending on how the data is processed, this results in different results for the model. The algorithms used for the model also highly influences the outcome. This ends up being an iterative process since at each sprint, the goal would be to create the best model possible. 
+This methodology also ties in well with the structure for machine learning projects. Before a model can be created, data will have to be processed. In this step, data must be prepared and cleaned such that it can be fed into a model. This is then followed by model training and finally model testing and evaluation. Figure \ref{fig:ml-life-cycle} displays the life cycle of machine learning projects \cite{methodology-ml-life-cycle}. Depending on how the data is processed, the results will differ for the model. The algorithms used for the model also highly influences the outcome. This ends up being an iterative process since at each sprint, the goal would be to create the best model possible. 
 
 \subsection{Risk analysis}
 
@@ -156,17 +151,32 @@ Creating my own hack and applying it to the model could also help learn patterns
 
     Machine learning has a wide variety of different algorithms that could be implemented in this project. However, I may end up choosing the wrong ones. For example, when attempting to refine the model, I could end up implementing a strategy that does not make any sense. It could even lead my model to learn incorrect information.
 Also, the first crucial step is to preprocess the data. Again, preprocessing it incorrectly could lead the model learning biased or incorrect information. For example, when the data contains a lot of NaNs, the model will not be able to handle this value. There are many ways of dealing with NaNs such as replacing it with a special value, using mean values or outright removing them. Whatever the method, it will affect the dataset which in turn will change the outcome of the model. A lot of background reading will be required and visualization of the dataset.
-  
-
   \end{enumerate}
-
-
-
 \end{enumerate}
 
+\begin{figure}[h!]
+   \includegraphics[width=\linewidth, keepaspectratio]{"Pictures/risk-analysis".png}
+   \caption{Likelihood vs Impact}
+   \label{fig:risk-analysis}
+\end{figure}
 
 
+\subsection{Gantt chart}
+The Gantt chart is split into different sections however since the dates have not been finalised, a lot of end-dates have been estimated. 
 
+The implementation section is split into two parts. There is an overall view of what I will be doing and it is also split into sprints to show specifically what I intend to do each sprint. The purple tasks are extensions that I would like to do if there is any time. There is also a block of sprints allocated incase I misjudged any timings.
+
+\begin{figure}[!p]
+    \centering
+    \begin{subfigure}{\linewidth}
+      \includegraphics[width=\linewidth]{Pictures/gantt-1".jpg}
+    \end{subfigure}
+    \begin{subfigure}{\linewidth}
+      \includegraphics[width=\linewidth]{"Pictures/gantt-2".jpg}
+    \end{subfigure}
+    \caption{Gantt chart}
+    \label{fig:image10}
+\end{figure}
 
 
 
