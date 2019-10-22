@@ -9,10 +9,9 @@ def read_files(files, shuffle=True):
     for i in range(len(files)):
         print("Current file iteration {0} - {1}".format(i, files[i]))
         chunk_list = []
-        chunk_size = 10 ** 2  # number of rows to read in one "chunk"
+        chunk_size = 10 ** 6  # number of rows to read in one "chunk"
 
-        for j, chunk in enumerate(pd.read_csv(files[i], chunksize=chunk_size, nrows=10,
-                                              skiprows=range(1, 5000, 20))):  # todo remove nrows
+        for j, chunk in enumerate(pd.read_csv(files[i], chunksize=chunk_size, nrows=5000)):  # todo remove nrows
             print("%s: Chunk process %s" % (i, j))
             chunk = chunk[chunk.Label.str.contains('labels') == False]  # Removes csv rows that have headers repeating
             chunk_list.append(chunk)
@@ -34,7 +33,7 @@ if __name__ == "__main__":
                         default=r"D:\Datasets\aws")  # todo remove default
 
     args = parser.parse_args()
-    dataset_files = glob(args.data_location + r"\*.csv")
+    dataset_files = glob(args.data_location + r"\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv")
 
     df = read_files(dataset_files)
     print(df.info())

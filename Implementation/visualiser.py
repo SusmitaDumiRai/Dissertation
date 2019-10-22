@@ -1,6 +1,9 @@
+import missingno
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+from Implementation.process_csv import read_files
 
 
 def visualise_boxplot(data, save=False):
@@ -47,3 +50,45 @@ def visualise_pie(data, save=False):
         plt.savefig(r'out/pie.png')
 
     plt.show()
+
+
+# todo move these functions to process_csv
+def visualise_NaNs(data):
+    null_sum = data.isnull().sum()
+    null_sum.plot.bar()
+    plt.show()
+
+
+def get_infinity_index(data):
+    inf_index = []
+    cat_data = data.select_dtypes(include='object')
+
+    for col in list(cat_data):
+        print(col)
+        inf_index.append(list(dataset[dataset[col].str.contains("Infinity") == True].index.values))
+
+    return inf_index
+
+
+def remove_rows(data, index):
+    # index = list of lists
+    j = data
+    for i in index:
+        j = j.drop(i)
+
+    return j
+
+
+
+
+
+if __name__ == '__main__':
+    dataset = read_files([r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"])  # todo remove hardcode
+    # visualise_NaNs(dataset)
+    # np.isinf(dataset)
+    # dataset2 = dataset[dataset.Label.str.contains('labels') == False]
+    inf_idx = get_infinity_index(dataset)
+    remove_rows(dataset, inf_idx)
+
+
+    # print(dataset[dataset.str.contains("Infinity") == True])
