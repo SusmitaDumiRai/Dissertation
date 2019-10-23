@@ -1,8 +1,21 @@
-import pandas as pd
+import logging
+import sys
+
 import matplotlib.pyplot as plt
 
 from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, get_null_dataframe
 
+# TODO FIX LOGGING IN THIS FILE.
+formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
+
+logging.basicConfig(filename=r"out/process_data-log.log",  # todo fix this
+                            filemode='a',
+                            format=formatter,
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
+
+logger = logging.getLogger('urbanGUI')
+logger.setLevel(logging.DEBUG)
 
 def visualise_boxplot(data, normalise=True, save=False, fp=r"out/boxplot.png"):
     if normalise:
@@ -62,10 +75,14 @@ def write_csv(data, fp=r"out/null.csv"):
     data.to_csv(fp, index=False)
 
 if __name__ == '__main__':
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(formatter)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
     dataset = read_files([r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"])  # todo remove hardcode
-    null_dataset = get_null_dataframe(dataset)
-
-
+    print(dataset.head())
     # pruned_dataset = drop_nan_rows(dataset)
 
     # null_columns = pruned_dataset.columns[pruned_dataset.isnull().any()]
@@ -73,6 +90,5 @@ if __name__ == '__main__':
 
     # visualise_NaNs(null_dataset)
     # visualise_boxplot(get_numerical_data(null_dataset), normalise=False)
-    write_csv(null_dataset)
-    visualise_pie(null_dataset, save=True, fp=r"out/nan-labels")
+    # visualise_pie(null_dataset)
 

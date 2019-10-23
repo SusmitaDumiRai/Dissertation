@@ -1,8 +1,20 @@
+import sys
 import argparse
+import logging
 import pandas as pd
 
 from glob import glob
 
+formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
+
+logging.basicConfig(filename=r"out/process_data-log.log",  # todo fix this
+                            filemode='a',
+                            format=formatter,
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
+
+logger = logging.getLogger('urbanGUI')
+logger.setLevel(logging.DEBUG)
 
 def read_files(files, shuffle=False, prune=False):
     chunk_dfs = []
@@ -20,13 +32,12 @@ def read_files(files, shuffle=False, prune=False):
         chunk_dfs.append(chunk_df)
 
     dataframe = pd.concat(chunk_dfs, sort=True).reset_index(drop=True)
-    print("All files read, new dataframe created - dataframe shape {0} ".format(dataframe.shape))
+    logger.info("All files read, new dataframe created - dataframe shape: {0} ".format(dataframe.shape))
 
     # if shuffle:  # todo test this code.
     #   dataframe = df.sample(frac=1).reset_index(drop=True)
     if prune:
         pruned_dataframe = drop_nan_rows(dataframe)
-
         return dataframe, pruned_dataframe
 
     return dataframe
@@ -47,7 +58,7 @@ def get_null_dataframe(data):
         null_dfs.append(data.iloc[row_index].to_frame().transpose())
 
     null_dataframe = pd.concat(null_dfs).reset_index(drop=True)
-    print("Null dataframe created - dataframe shape {0} ".format(null_dataframe.shape))
+    logger.info("Null dataframe created - dataframe shape: {0} ".format(null_dataframe.shape))
     return null_dataframe
 
 
@@ -59,7 +70,7 @@ def drop_nan_rows(data):  # some rows contain "Infinity values - removing them f
         pruned_data = pruned_data.drop(pruned_data[pruned_data[col] == "Infinity"].index)
 
     pruned_data = pruned_data.reset_index(drop=True)
-    print("NaNs & Infinity removed - dataframe shape {0}".format(pruned_data.shape))
+    logger.info("NaNs & Infinity removed - dataframe shape: {0}".format(pruned_data.shape))
     return pruned_data
 
 
@@ -72,6 +83,12 @@ def normalise_data(data):
 
 
 if __name__ == "__main__":
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(formatter)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--data-location", help="location of dataset",
                         default=r"D:\Datasets\aws")  # todo remove default
