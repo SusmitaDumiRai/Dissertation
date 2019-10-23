@@ -82,7 +82,7 @@ def support_vector_machine_classifier(data, save=False, fp=r"out/svm-model.sav")
 
     logger.info("Support vector machine classifier -- initialised")
     start_time = time.time()
-    clf = svm.SVC(kernel='linear', verbose=2)
+    clf = svm.LinearSVC(verbose=2)
     clf.fit(X_train, y_train)
 
     if save:
@@ -104,6 +104,6 @@ if __name__ == '__main__':
     original_dataset, pruned_dataset = read_files(
         [r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], prune=True)  # todo remove hardcode
 
-    random_forest_classifier(pruned_dataset, True)
+    # random_forest_classifier(pruned_dataset, True)
     support_vector_machine_classifier(pruned_dataset, True)
 
