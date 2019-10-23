@@ -11,7 +11,7 @@ def read_files(files, shuffle=False, prune=False):
         chunk_list = []
         chunk_size = 10 ** 6  # number of rows to read in one "chunk"
 
-        for j, chunk in enumerate(pd.read_csv(files[i], chunksize=chunk_size, nrows=10000)):  # todo remove nrows
+        for j, chunk in enumerate(pd.read_csv(files[i], chunksize=chunk_size)):  # todo remove nrows
             print("%s: Chunk process %s" % (i, j))
             chunk = chunk[chunk.Label.str.contains('labels') == False]  # Removes csv rows that have headers repeating
             chunk_list.append(chunk)
@@ -37,6 +37,20 @@ def get_numerical_data(data):
     return data.drop(categorical_columns, axis=1)
 
 
+def get_null_dataframe(data):
+    null_dfs = []
+    null_columns = data.columns[data.isnull().any()]
+    nan_data = data[data.isnull().any(axis=1)][null_columns].reset_index()
+
+    for index, row in nan_data.iterrows():
+        row_index = row['index']
+        null_dfs.append(data.iloc[row_index].to_frame().transpose())
+
+    null_dataframe = pd.concat(null_dfs).reset_index(drop=True)
+    print("Null dataframe created - dataframe shape {0} ".format(null_dataframe.shape))
+    return null_dataframe
+
+
 def drop_nan_rows(data):  # some rows contain "Infinity values - removing them for now"
     # todo understand what are these infinite values.
     pruned_data = data
@@ -47,6 +61,14 @@ def drop_nan_rows(data):  # some rows contain "Infinity values - removing them f
     pruned_data = pruned_data.reset_index(drop=True)
     print("NaNs & Infinity removed - dataframe shape {0}".format(pruned_data.shape))
     return pruned_data
+
+
+def normalise_data(data):
+    from sklearn import preprocessing
+    values = data.values
+    min_max_scaler = preprocessing.MinMaxScaler()
+    values_scaled = min_max_scaler.fit_transform(values)
+    return pd.DataFrame(values_scaled, columns=list(data))
 
 
 if __name__ == "__main__":

@@ -1,31 +1,22 @@
-import missingno
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows
+from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, get_null_dataframe
 
 
-def visualise_boxplot(data, save=False):
-    from sklearn.preprocessing import MinMaxScaler
-
-    numerical_data = get_numerical_data(data)
-    values = numerical_data.values
-    min_max_scaler = MinMaxScaler()
-    values_scaled = min_max_scaler.fit_transform(values)
-    scaled_data = pd.DataFrame(values_scaled,
-                               columns=list(numerical_data))
-
-    scaled_data.boxplot(column=list(scaled_data), figsize=(30, 5), rot=90)
+def visualise_boxplot(data, normalise=True, save=False, fp=r"out/boxplot.png"):
+    if normalise:
+        data = normalise_data(data)
+    data.boxplot(column=list(data), figsize=(30, 5), rot=90)
     plt.tight_layout()
 
     if save:
-        plt.savefig(r'out/boxplot.png')
+        plt.savefig(fp)
 
     plt.show()
 
 
-def visualise_pie(data, save=False):
+def visualise_pie(data, save=False, fp=r"out/pie.png"):
     protocols = data.groupby(['Label']).size().reset_index(name='count')
 
     protocols['count_norm'] = [float(i) / sum(protocols['count'])
@@ -50,39 +41,38 @@ def visualise_pie(data, save=False):
     plt.tight_layout()
 
     if save:
-        plt.savefig(r'out/pie.png')
+        plt.savefig(fp)
 
     plt.show()
 
 
-def visualise_NaNs(data, save=False):
+def visualise_NaNs(data, save=False, fp=r'out/nans.png'):
     null_sum = data.isnull().sum()
     null_sum.plot.bar(figsize=(20, 5))
 
     plt.tight_layout()
 
     if save:
-        plt.savefig(r'out/nans.png')
+        plt.savefig(fp)
 
     plt.show()
 
 
-def get_infinity_index(data):
-    inf_index = []
-    cat_data = data.select_dtypes(include='object')
-
-    for col in list(cat_data):
-        print(col)
-        inf_index.append(list(dataset[dataset[col].str.contains("Infinity") == True].index.values))
-
-    return inf_index
+def write_csv(data, fp=r"out/null.csv"):
+    data.to_csv(fp, index=False)
 
 if __name__ == '__main__':
     dataset = read_files([r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"])  # todo remove hardcode
-    visualise_NaNs(dataset)
+    null_dataset = get_null_dataframe(dataset)
 
-    pruned_dataset = drop_nan_rows(dataset)
-    visualise_NaNs(pruned_dataset)
-    visualise_boxplot(pruned_dataset)
-    visualise_pie(pruned_dataset)
+
+    # pruned_dataset = drop_nan_rows(dataset)
+
+    # null_columns = pruned_dataset.columns[pruned_dataset.isnull().any()]
+    # print(pruned_dataset[pruned_dataset.isnull().any(axis=1)][null_columns].head())
+
+    # visualise_NaNs(null_dataset)
+    # visualise_boxplot(get_numerical_data(null_dataset), normalise=False)
+    write_csv(null_dataset)
+    visualise_pie(null_dataset, save=True, fp=r"out/nan-labels")
 
