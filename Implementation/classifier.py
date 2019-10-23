@@ -31,7 +31,7 @@ def label_encode_class(data):
     le = LabelEncoder()
     le.fit(data)
 
-    print("Label encoder mapping {0}".format(label_encoder_mapping(le)))
+    logger.info("Label encoder mapping {0}".format(label_encoder_mapping(le)))
 
     return le.transform(data).ravel()
 
@@ -44,12 +44,16 @@ def split_data(data, test_size=0.3, normalise=False):
     inputs = [label for label in list(data) if label not in output and label not in categorical_columns]
 
     if normalise:
-        logger.info("")
+        logger.info("Data is being normalised.")
         data[inputs] = normalise_data(data[inputs])
+
 
     X = data[inputs]
     y = label_encode_class(data[output])
 
+    logger.info("Y/Output variable {0} with shape {1}".format(output, y.shape))
+    logger.info("X/Input variables {0} with shape {1}".format(inputs, X.shape))
+    logger.info("Train vs Test split: {0}-{1}".format(1-test_size, test_size))
     return train_test_split(X, y, test_size=test_size)  # 70% training and 30% test
 
 
@@ -59,7 +63,7 @@ def random_forest_classifier(data, save=False, fp=r"out/rf-model.sav"):
 
     logger.info("Random forest classifier -- initialised")
     start_time = time.time()
-    clf = RandomForestClassifier(n_estimators=100)
+    clf = RandomForestClassifier(n_estimators=100, verbose=2)
     clf.fit(X_train, y_train)
 
     if save:
@@ -76,8 +80,9 @@ def support_vector_machine_classifier(data, save=False, fp=r"out/svm-model.sav")
 
     X_train, X_test, y_train, y_test = split_data(data, normalise=True)
 
+    logger.info("Support vector machine classifier -- initialised")
     start_time = time.time()
-    clf = svm.SVC(kernel='linear', verbose=1)  # Linear Kernel
+    clf = svm.SVC(kernel='linear', verbose=2)
     clf.fit(X_train, y_train)
 
     if save:
@@ -100,4 +105,5 @@ if __name__ == '__main__':
         [r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], prune=True)  # todo remove hardcode
 
     random_forest_classifier(pruned_dataset, True)
+    support_vector_machine_classifier(pruned_dataset, True)
 

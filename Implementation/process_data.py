@@ -19,12 +19,12 @@ logger.setLevel(logging.DEBUG)
 def read_files(files, shuffle=False, prune=False):
     chunk_dfs = []
     for i in range(len(files)):
-        print("Current file iteration {0} - {1}".format(i, files[i]))
+        logger.info("Current file iteration {0} - {1}".format(i, files[i]))
         chunk_list = []
         chunk_size = 10 ** 6  # number of rows to read in one "chunk"
 
         for j, chunk in enumerate(pd.read_csv(files[i], chunksize=chunk_size)):  # todo remove nrows
-            print("%s: Chunk process %s" % (i, j))
+            logger.info("%s: Chunk process %s" % (i, j))
             chunk = chunk[chunk.Label.str.contains('labels') == False]  # Removes csv rows that have headers repeating
             chunk_list.append(chunk)
 
