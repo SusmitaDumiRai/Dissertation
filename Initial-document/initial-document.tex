@@ -11,7 +11,7 @@
 
 \begin{document}
 \pagenumbering{gobble}
-\title{Applying machine learning to create a robust intrusion detection system}
+\title{Using machine learning to create a robust intrusion detection system}
 \author{Susmita Rai - 908928}
 \date{}
 \maketitle
@@ -29,7 +29,7 @@ Intrusion detection systems are fundamental for defending against cyber attacks.
 
 \section{Project definition}
 \subsection{Introduction}
-With the rapid expansion of the Internet, it has become an essential part of our lives with over half the population connected \cite{wearesocial}. However, this results in an increasingly complex and fragile network. Many systems are left vulnerable, waiting to be exploited. By 2021, it is predicted that cost of cyber-attacks will reach \$6 trillion \cite{varonis}. The importance of a good and secure security system is far too crucial.
+With the rapid expansion of the Internet, it has become an essential part of our lives with over half the population connected \cite{wearesocial}. However, this results in an increasingly complex and fragile network, many systems are left vulnerable, waiting to be exploited. By 2021, it is predicted that cost of cyber-attacks will reach \$6 trillion \cite{varonis}. The importance of a good and secure security system is far too crucial.
 
 “Offensive cyber capabilities are developing more rapidly than our ability to deal with hostile incidents” \cite{globalrisks}. Attacks are becoming smarter, polymorphic viruses and obscured malwares are passing through current systems. Over a third of organizations believe that the threats they are facing cannot be blocked by their anti-virus \cite{varonis}. 
 Due to our rapid growth, we have left many openings for an attack, one of them is through the network. Our need for constantly being connected is causing a major gap in security. In 2017, 8 different network attacks dominated the market \cite{network-attack-types}.
@@ -116,6 +116,8 @@ This methodology also ties in well with the structure for machine learning proje
 
   This project deals with two separate issues, machine learning and security. For this project to succeed, it requires high domain knowledge in both fields which I may not have. However, by planning properly, tasks can be broken down into simpler components. Also, guidance is available from experts in the field.
 
+
+
   \begin{enumerate}
     \item{Dataset}
 
@@ -128,7 +130,7 @@ This methodology also ties in well with the structure for machine learning proje
     \item{Malware – features of importance}
 
     Understanding what features are important will be crucial therefore my lack of knowledge can be a risk. However there are many guides on malwares which I will have to read. If necessary, ask for expert advice as well.
-  
+
     \item{Machine learning - applying right methods}
 
     Machine learning has a wide variety of different algorithms to choose from and I may end up choosing the wrong ones. Also, I could preprocess the data incorrectly which could lead to the model learning biased or incorrect information. This will  require a lot of background reading.
@@ -142,6 +144,9 @@ This methodology also ties in well with the structure for machine learning proje
 \end{figure}
 
 
+Figure \ref{fig:risk-analysis} shows the likelihood vs impact of a risk. As shown in graph, choosing the wrong dataset can be very severe however the likelihood of that happening is low due to having access to many experts in the field. Whereas generalisability's likelihood is high but impact is low. This is because networks are so unique that creating an intrusion detection system that is generalisable will be a difficult task however since this is not the main aim of this project, the impact is quite low. The rest of the risks are more in the middle, this is because they could fluctuate such that they never occur and their impact is low or they happen frequently and have high impact.
+
+
 \subsection{Gantt chart}
 The Gantt chart is split into different sections however since the dates have not been finalised, a lot of end-dates have been estimated. 
 
@@ -152,10 +157,10 @@ The implementation section is split into two parts. There is an overall view of 
 \begin{figure}[!p]
     \centering
     \begin{subfigure}{\linewidth}
-      \includegraphics[width=\linewidth]{Pictures/gantt-1".jpg}
+      \includegraphics[width=\linewidth]{Pictures/gantt-1".png}
     \end{subfigure}
     \begin{subfigure}{\linewidth}
-      \includegraphics[width=\linewidth]{"Pictures/gantt-2".jpg}
+      \includegraphics[width=\linewidth]{"Pictures/gantt-2".png}
     \end{subfigure}
     \caption{Gantt chart}
     \label{fig:image10}
