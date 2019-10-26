@@ -49,12 +49,12 @@ Fortunately, methods such as Intrusion detection system (IDS) exist to deter mos
 
 However, IDS face many issues such as explaining what an anomaly is in the first place. Robustness and accuracy also come into question. How often does an IDS system report false negatives or how many different types of malwares can they detect? 
 
-By using machine learning may be possible to overcome these problems because of its ability to learn patterns and understand different classifications. As malware evolve, the system can also be retrained to learn new patterns of attack. Because of this, I aim to create a robust system that is capable of detecting malwares using using machine learning.
+By using machine learning it may be possible to overcome these problems because of its ability to learn patterns and understand different classifications. As malware evolve, the system can also be retrained to learn new patterns of attack. Because of this, I aim to create a robust system that is capable of detecting malwares using using machine learning.
 
 \subsection{Project aims}
 The project aims to create a system that can detect malware on a network by incorporating machine learning. The system should be able to classify a wide range of malwares accurately whilst having a low false positive rate. 
 
-There are several different ways accomplish this. Below is list of steps I will take to approach this problem with several extensions that I would like to do, given time constraints and my own ability. 
+There are several different ways accomplish this. Below is a list of steps I will take to approach this problem with several extensions that I would like to do, given time constraints and my own ability. 
 
 \begin{enumerate}
   \item Develop a system capable of classifying different malwares. 
@@ -82,7 +82,6 @@ There are several different ways accomplish this. Below is list of steps I will 
   \end{enumerate}  
 \end{enumerate}
 
-\newpage
 \section{Project management}
 \subsection{Methodology}
 For this project, I have chosen to use Scrum agile methodology because of its iterative nature. Scrum framework follows one simple rule, that requirements can change, or otherwise known as requirements volatility \cite{methodology-requirement-volatile}. Due to its flexibility, Scrum is ideally designed for a team of ten or fewer \cite{methodology-ten-fewer} and since I will be working alone, some of its fundamentals will be altered
@@ -183,9 +182,13 @@ By utilizing data mining techniques such as Bayesian networks, to select feature
 
 Further research has been done on applying algorithms that are capable of learning and understanding features on a massive scope. Genetic algorithms mixed with traditional algorithms resulted in lower false positives and false negatives \cite{related-work-criticise-signature}. 
 
-By using several different supervised techniques such as support vector machines, one paper managed to obtain high classification results. However no single algorithm was best at classifying all different attacks, each one had their own strengths. But, relatively they all showed promising results \cite{related-work-supe}. 
+By using several different supervised techniques such as support vector machines, one paper managed to obtain high classification results. However no single algorithm was best at classifying all different attacks, each one had their own strengths. But, relatively they all showed promising results \cite{related-work-advantages-and-disadvantages}. 
 
-Unfortunately, even with many different implements, current IDS systems present different results for the same situation \cite{related-work-advantages-and-disadvantages}. Judging the results can also be difficult. IDS systems that have high true positive and low false positive rate could lead to a false sense of security, especially if the attacks are over a large portion of traffic \cite{related-work-advantages-and-disadvantages}.
+Unsupervised learning has also been used to create an intrusion detection system \cite{related-work-unsupe}. By using unsupervised learning, data is grouped and any outliers detected are considered anomalies. This does not require any training and can detect novel attacks since it will mark it as an anomaly. However issues can occur such that the anomaly detected is nothing malicious resulting in high false postives.
+
+Apart from machine learning, novel techniques such as using multiple multi-agents have also been tested \cite{related-work-multiagent}. By using four different types of agents such as basic detection agent, the system is capable of adapting to new and unique attacks.
+
+Unfortunately, even with many different implements, current IDS systems present different results for the same situation \cite{related-work-advantages-and-disadvantages}. Judging the results can also be difficult. IDS systems that have high true positive and low false positive rate could lead to a false sense of security, especially if the attacks are over a large portion of traffic.
 
 This shows that there’s progress still to make when implementing an IDS system that has high positive rate with low false positives. One that is also able to handle the constant face-paced changes of evolving malwares.
 
@@ -193,7 +196,7 @@ This shows that there’s progress still to make when implementing an IDS system
 \subsubsection{Language - Python 3}
 To be able to complete this project, I will be using Python 3 as it provides many native packages and resources that I can use.
 
-For machine learning, there is a variety of packages that has all the core functionalities already covered.
+For machine learning, there are a variety of packages that has all the core functionalities already covered.
 
 \begin{enumerate}
   \item{Tensorflow}
@@ -388,7 +391,7 @@ With missing data handled, it is then trivial to train classifiers.
 
 A random forest classifier is a learning method where it contains many regression trees \cite{initial-analysis-rf}. Each tree is based on a random subset of inputs which reduces the correlation between the trees therefore improving the performance of the random forest. 
 
-Using a cleaned dataset where it contains no missing values, it took 115 seconds to train using 100 trees. The accuracy rate was 99\%, which is pretty impressive for how quickly it trained. 
+Using a cleaned dataset where it there were no missing values, it took 115 seconds to train using 100 trees. The accuracy rate was 99\%, which is pretty impressive for how quickly it trained. 
 
 \textbf{Linear support vector machine}  
 
@@ -403,11 +406,11 @@ Both classifiers returned incredible results for very little training time. Howe
 \section{Conclusion}
 From my research, it shows that there is still a need for a good intrusion detection system that has a high true positive rate and a low false positive rate and with the capabilities to adapt to new evolving malwares. 
 
-To create this intrusion detection system, I have chosen a dataset containing multiple different attacks on a network. Using this dataset, I will create a classifier that is can detect these attacks with high accuracy. My preliminary work using random forest and linear support vector machine to create a classifier that can detect if a device is part of a botnet shows promising results. 
+To create this intrusion detection system, I have chosen a dataset containing multiple different attacks on a network. Using this dataset, I will create a classifier that can detect these attacks with high accuracy. My preliminary work using random forest and linear support vector machine to create a binary classifier that can detect if a device is part of a botnet shows promising results. 
 
 There are still many different algorithms to implement to produce the best results including deep learning. This will require strenuous processing and visualization of the data. 
 
-Finally, if the model can understand different classifications well, then I will produce synthetic data and retrain the model such that it will be able to understand the difference between a real and fake attack. This should then reduce the number of false positives. 
+Finally, if the model can understand different classifications well, then I will produce synthetic data and retrain the model such that it will be able to understand the difference between a real and fake attack. This should then reduce the number of false positives and increase the robustness. 
 
 
 
