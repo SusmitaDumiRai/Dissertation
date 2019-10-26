@@ -1,26 +1,35 @@
-import numpy as np
-import pandas as pd
+import logging
+import sys
+
 import matplotlib.pyplot as plt
 
+from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, get_null_dataframe
 
-def visualise_boxplot(data, save=False):
-    from sklearn.preprocessing import MinMaxScaler
+# TODO FIX LOGGING IN THIS FILE.
+formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
-    values = data.values
-    min_max_scaler = MinMaxScaler()
-    values_scaled = min_max_scaler.fit_transform(values)
-    scaled_data = pd.DataFrame(values_scaled,
-                               columns=list(data))
+logging.basicConfig(filename=r"out/process_data-log.log",  # todo fix this
+                            filemode='a',
+                            format=formatter,
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
 
-    scaled_data.boxplot(column=list(scaled_data), figsize=(25, 5), rot=90)
+logger = logging.getLogger('urbanGUI')
+logger.setLevel(logging.DEBUG)
+
+def visualise_boxplot(data, normalise=True, save=False, fp=r"out/boxplot.png"):
+    if normalise:
+        data = normalise_data(data)
+    data.boxplot(column=list(data), figsize=(30, 5), rot=90)
+    plt.tight_layout()
 
     if save:
-        plt.savefig(r'out/boxplot.png')
+        plt.savefig(fp)
 
     plt.show()
 
 
-def visualise_pie(data, save=False):
+def visualise_pie(data, save=False, fp=r"out/pie.png"):
     protocols = data.groupby(['Label']).size().reset_index(name='count')
 
     protocols['count_norm'] = [float(i) / sum(protocols['count'])
@@ -30,7 +39,7 @@ def visualise_pie(data, save=False):
     pr_y = protocols['count']
     percent = 100. * pr_y / pr_y.sum()
 
-    patches, texts = plt.pie(pr_y, startangle=90, radius=1.2)
+    patches, texts = plt.pie(pr_y, startangle=80, radius=1.2)
     labels = ['{0} - {1:1.3f} %'.format(i, j) for i, j in zip(pr_x, percent)]
 
     sort_legend = True
@@ -40,10 +49,46 @@ def visualise_pie(data, save=False):
                                              reverse=True))
 
     plt.legend(patches, labels, loc='best',
-               bbox_to_anchor=(-0.1, 1.), fontsize=10)
+               bbox_to_anchor=(0.8, 1.), fontsize=10)
     plt.title('Labels')
+    plt.tight_layout()
 
     if save:
-        plt.savefig(r'out/pie.png')
+        plt.savefig(fp)
 
     plt.show()
+
+
+def visualise_NaNs(data, save=False, fp=r'out/nans.png'):
+    null_sum = data.isnull().sum()
+    null_sum.plot.bar(figsize=(20, 5))
+
+    plt.tight_layout()
+
+    if save:
+        plt.savefig(fp)
+
+    plt.show()
+
+
+def write_csv(data, fp=r"out/null.csv"):
+    data.to_csv(fp, index=False)
+
+if __name__ == '__main__':
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(formatter)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    dataset = read_files([r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"])  # todo remove hardcode
+    print(dataset.head())
+    # pruned_dataset = drop_nan_rows(dataset)
+
+    # null_columns = pruned_dataset.columns[pruned_dataset.isnull().any()]
+    # print(pruned_dataset[pruned_dataset.isnull().any(axis=1)][null_columns].head())
+
+    # visualise_NaNs(null_dataset)
+    # visualise_boxplot(get_numerical_data(null_dataset), normalise=False)
+    # visualise_pie(null_dataset)
+
