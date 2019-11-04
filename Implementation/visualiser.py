@@ -1,9 +1,10 @@
 import logging
 import sys
+import argparse
 
 import matplotlib.pyplot as plt
 
-from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, get_null_dataframe
+from process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, get_null_dataframe
 
 # TODO FIX LOGGING IN THIS FILE.
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
@@ -80,11 +81,24 @@ if __name__ == '__main__':
     formatter = logging.Formatter(formatter)
     handler.setFormatter(formatter)
     logger.addHandler(handler)
+    parser = argparse.ArgumentParser()
 
-    dataset = read_files([r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"])  # todo remove hardcode
+    parser.add_argument("-f", "--filepath", help="filepath to csv", required=True)  # todo turn on recursive.
+    parser.add_argument("-n", "--nans", help="visualise nans")  
+    parser.add_argument("-b", "--boxplot", help="visualise boxplot")
+    parser.add_argument("-o", "--out", help="outpath")  # todo fix
+    parser.add_argument("-p", "--prune", help="prune nans", default=False)  # todo prune nans = remove them
+    args = parser.parse_args()
+
+    dataset = read_files([args.filepath])  # todo remove hardcode
     print(dataset.head())
-    # pruned_dataset = drop_nan_rows(dataset)
 
+    if args.prune:
+        pruned_dataset = drop_nan_rows(dataset)
+
+
+    if args.nans:
+        visualise_NaNs(dataset, save=True, fp="out/nans1.png")
     # null_columns = pruned_dataset.columns[pruned_dataset.isnull().any()]
     # print(pruned_dataset[pruned_dataset.isnull().any(axis=1)][null_columns].head())
 
