@@ -95,7 +95,7 @@ if __name__ == "__main__":
                       default=r"D:\Datasets\aws")  # todo remove default
 
   args = parser.parse_args()
-  dataset_files = glob(args.data_location + r"\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv")
+  dataset_files = glob(args.data_location + r"/*.csv")
 
   df = read_files(dataset_files)
   print(df.info())

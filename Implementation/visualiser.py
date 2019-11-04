@@ -10,7 +10,7 @@ from process_data import read_files, get_numerical_data, drop_nan_rows, normalis
 # TODO FIX LOGGING IN THIS FILE.
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
-logging.basicConfig(filename=r"out/process_data-log.log",  # todo fix this
+logging.basicConfig(filename=r"out/visualiser-log.log",  # todo fix this
                     filemode='a',
                     format=formatter,
                     datefmt='%H:%M:%S',
@@ -18,7 +18,6 @@ logging.basicConfig(filename=r"out/process_data-log.log",  # todo fix this
 
 logger = logging.getLogger('urbanGUI')
 logger.setLevel(logging.DEBUG)
-
 
 def visualise_boxplot(data, fp, normalise=True, save=False):
   name = fp + "boxplot.png"
