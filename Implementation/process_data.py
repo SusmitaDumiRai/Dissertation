@@ -13,8 +13,8 @@ logging.basicConfig(filename=r"out/process_data-log.log",  # todo fix this
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
 
-logger = logging.getLogger('urbanGUI')
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def read_files(files, shuffle=False, prune=False):
@@ -85,7 +85,7 @@ def normalise_data(data):
 
 if __name__ == "__main__":
   handler = logging.StreamHandler(sys.stdout)
-  handler.setLevel(logging.DEBUG)
+  handler.setLevel(logging.INFO)
   formatter = logging.Formatter(formatter)
   handler.setFormatter(formatter)
   logger.addHandler(handler)

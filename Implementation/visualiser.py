@@ -4,20 +4,20 @@ import argparse
 
 import matplotlib.pyplot as plt
 
-from process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, \
-  get_null_dataframe
-
 # TODO FIX LOGGING IN THIS FILE.
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
-logging.basicConfig(filename=r"out/visualiser-log.log",  # todo fix this
+logging.basicConfig(filename=r"out/visualiser-log.log",
                     filemode='a',
                     format=formatter,
-                    datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
+                    datefmt='%H:%M:%S')
 
-logger = logging.getLogger('urbanGUI')
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+
+from process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, \
+  get_null_dataframe
 
 def visualise_boxplot(data, fp, normalise=True, save=False):
   name = fp + "boxplot.png"
@@ -81,7 +81,7 @@ def visualise_NaNs(data, fp, save=False):
 
 if __name__ == '__main__':
   handler = logging.StreamHandler(sys.stdout)
-  handler.setLevel(logging.DEBUG)
+  handler.setLevel(logging.INFO)
   formatter = logging.Formatter(formatter)
   handler.setFormatter(formatter)
   logger.addHandler(handler)

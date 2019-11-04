@@ -14,10 +14,10 @@ logging.basicConfig(filename=r"out/classifier-log.log",  # todo fix this
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
 
-logger = logging.getLogger('urbanGUI')
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
-from Implementation.process_data import read_files, normalise_data
+from process_data import read_files, normalise_data
 
 
 def label_encode_class(data):
@@ -94,13 +94,13 @@ def support_vector_machine_classifier(data, save=False, fp=r"out/svm-model.sav")
 
 if __name__ == '__main__':
   handler = logging.StreamHandler(sys.stdout)
-  handler.setLevel(logging.DEBUG)
+  handler.setLevel(logging.INFO)
   formatter = logging.Formatter(formatter)
   handler.setFormatter(formatter)
   logger.addHandler(handler)
 
   original_dataset, pruned_dataset = read_files(
-    [r"C:\Users\908928.TAWE\aws\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], prune=True)  # todo remove hardcode
+    [r"../Datasets/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], prune=True)  # todo remove hardcode
 
   # random_forest_classifier(pruned_dataset, True)
   support_vector_machine_classifier(pruned_dataset, True)
