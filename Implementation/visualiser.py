@@ -29,6 +29,7 @@ def visualise_boxplot(data, fp, normalise=True, save=False):
 
   if save:
     plt.savefig(name)
+    logger.info("Boxplot visualised at location: {0}".format(name))
 
   plt.show()
 
@@ -60,6 +61,7 @@ def visualise_pie(data, fp, save=False):
 
   if save:
     plt.savefig(name)
+    logger.info("Pie chart visualised at location: {0}".format(name))
 
   plt.show()
 
@@ -73,6 +75,7 @@ def visualise_NaNs(data, fp, save=False):
 
   if save:
     plt.savefig(name)
+    logger.info("NaN graph visualised at location: {0}".format(name))
 
   plt.show()
 
