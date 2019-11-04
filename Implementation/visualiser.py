@@ -4,7 +4,7 @@ import argparse
 
 import matplotlib.pyplot as plt
 
-from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, \
+from process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, \
   get_null_dataframe
 
 # TODO FIX LOGGING IN THIS FILE.
@@ -89,7 +89,7 @@ if __name__ == '__main__':
   parser.add_argument("-f", "--filepath", help="filepath to csv", required=True)  # todo turn on recursive.
   parser.add_argument("-n", "--nans", help="visualise nans")
   parser.add_argument("-b", "--boxplot", help="visualise boxplot")
-  parser.add_argument("-o", "--out", help="outpath")  # todo fix
+  parser.add_argument("-i", "--pie", help="visualise pie")
   parser.add_argument("-p", "--prune", help="prune nans", default=False)  # todo prune nans = remove them
   args = parser.parse_args()
 
@@ -100,10 +100,13 @@ if __name__ == '__main__':
     pruned_dataset = drop_nan_rows(dataset)
 
   if args.nans:
-    visualise_NaNs(dataset, save=True, fp="out/nans1.png")
-  # null_columns = pruned_dataset.columns[pruned_dataset.isnull().any()]
-  # print(pruned_dataset[pruned_dataset.isnull().any(axis=1)][null_columns].head())
+    visualise_NaNs(dataset, save=True)
 
-  # visualise_NaNs(null_dataset)
-  # visualise_boxplot(get_numerical_data(null_dataset), normalise=False)
-  # visualise_pie(null_dataset)
+  if args.boxplot:
+    visualise_boxplot(dataset, save=True)
+
+  if args.pie:
+    visualise_pie(dataset, save=True)
+
+
+
