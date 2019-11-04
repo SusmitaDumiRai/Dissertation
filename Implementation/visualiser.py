@@ -100,13 +100,13 @@ if __name__ == '__main__':
     pruned_dataset = drop_nan_rows(dataset)
 
   if args.nans:
-    visualise_NaNs(dataset, args.o, save=True)
+    visualise_NaNs(dataset, args.out, save=True)
 
   if args.boxplot:
-    visualise_boxplot(dataset, args.o, save=True)
+    visualise_boxplot(dataset, args.out, save=True)
 
   if args.pie:
-    visualise_pie(dataset, args.o, save=True)
+    visualise_pie(dataset, args.out, save=True)
 
 
 
