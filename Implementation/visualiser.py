@@ -20,19 +20,21 @@ logger = logging.getLogger('urbanGUI')
 logger.setLevel(logging.DEBUG)
 
 
-def visualise_boxplot(data, normalise=True, save=False, fp=r"out/boxplot.png"):
+def visualise_boxplot(data, fp, normalise=True, save=False):
+  name = fp + "boxplot.png"
   if normalise:
     data = normalise_data(data)
   data.boxplot(column=list(data), figsize=(30, 5), rot=90)
   plt.tight_layout()
 
   if save:
-    plt.savefig(fp)
+    plt.savefig(name)
 
   plt.show()
 
 
-def visualise_pie(data, save=False, fp=r"out/pie.png"):
+def visualise_pie(data, fp, save=False):
+  name = fp + "pie.png"
   protocols = data.groupby(['Label']).size().reset_index(name='count')
 
   protocols['count_norm'] = [float(i) / sum(protocols['count'])
@@ -57,25 +59,22 @@ def visualise_pie(data, save=False, fp=r"out/pie.png"):
   plt.tight_layout()
 
   if save:
-    plt.savefig(fp)
+    plt.savefig(name)
 
   plt.show()
 
 
-def visualise_NaNs(data, save=False, fp=r'out/nans.png'):
+def visualise_NaNs(data, fp, save=False):
+  name = fp + "nans.png"
   null_sum = data.isnull().sum()
   null_sum.plot.bar(figsize=(20, 5))
 
   plt.tight_layout()
 
   if save:
-    plt.savefig(fp)
+    plt.savefig(name)
 
   plt.show()
-
-
-def write_csv(data, fp=r"out/null.csv"):
-  data.to_csv(fp, index=False)
 
 
 if __name__ == '__main__':
@@ -87,10 +86,11 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
 
   parser.add_argument("-f", "--filepath", help="filepath to csv", required=True)  # todo turn on recursive.
-  parser.add_argument("-n", "--nans", help="visualise nans")
-  parser.add_argument("-b", "--boxplot", help="visualise boxplot")
-  parser.add_argument("-i", "--pie", help="visualise pie")
-  parser.add_argument("-p", "--prune", help="prune nans", default=False)  # todo prune nans = remove them
+  parser.add_argument("-n", "--nans", help="visualise nans", action="store_true")
+  parser.add_argument("-b", "--boxplot", help="visualise boxplot", action="store_true")
+  parser.add_argument("-i", "--pie", help="visualise pie", action="store_true")
+  parser.add_argument("-p", "--prune", help="prune nans", action="store_true")  # todo prune nans = remove them
+  parser.add_argument("-o", "--out", help="outfile path to save", default="out/")
   args = parser.parse_args()
 
   dataset = read_files([args.filepath])  # todo remove hardcode
@@ -100,13 +100,13 @@ if __name__ == '__main__':
     pruned_dataset = drop_nan_rows(dataset)
 
   if args.nans:
-    visualise_NaNs(dataset, save=True)
+    visualise_NaNs(dataset, args.o, save=True)
 
   if args.boxplot:
-    visualise_boxplot(dataset, save=True)
+    visualise_boxplot(dataset, args.o, save=True)
 
   if args.pie:
-    visualise_pie(dataset, save=True)
+    visualise_pie(dataset, args.o, save=True)
 
 
 
