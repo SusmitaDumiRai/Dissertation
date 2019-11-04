@@ -103,7 +103,7 @@ if __name__ == '__main__':
     visualise_NaNs(dataset, args.out, save=True)
 
   if args.boxplot:
-    visualise_boxplot(dataset, args.out, save=True)
+    visualise_boxplot(get_numerical_data(dataset), args.out, save=True)
 
   if args.pie:
     visualise_pie(dataset, args.out, save=True)
