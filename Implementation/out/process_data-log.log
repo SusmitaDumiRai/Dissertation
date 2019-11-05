@@ -1,0 +1,163 @@
+13:02:02 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/test/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:02:08 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:02:09 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:02:13 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:09:51 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/test/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:09:57 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:09:58 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:10:01 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:10:35 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/test/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:10:42 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:10:43 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:10:46 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:11:27 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv
+13:11:31 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:11:31 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:11:32 [process_data.py:23 -           read_files()] INFO | Current file iteration 1 - ../Datasets/Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv
+13:11:34 [process_data.py:28 -           read_files()] INFO | 1: Chunk process 0
+13:11:34 [process_data.py:23 -           read_files()] INFO | Current file iteration 2 - ../Datasets/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv
+13:11:38 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 0
+13:11:39 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 1
+13:11:40 [process_data.py:23 -           read_files()] INFO | Current file iteration 3 - ../Datasets/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:11:46 [process_data.py:28 -           read_files()] INFO | 3: Chunk process 0
+13:11:47 [process_data.py:28 -           read_files()] INFO | 3: Chunk process 1
+13:11:47 [process_data.py:23 -           read_files()] INFO | Current file iteration 4 - ../Datasets/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv
+13:11:52 [process_data.py:28 -           read_files()] INFO | 4: Chunk process 0
+13:11:53 [process_data.py:23 -           read_files()] INFO | Current file iteration 5 - ../Datasets/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv
+13:11:57 [process_data.py:28 -           read_files()] INFO | 5: Chunk process 0
+13:11:58 [process_data.py:28 -           read_files()] INFO | 5: Chunk process 1
+13:11:59 [process_data.py:23 -           read_files()] INFO | Current file iteration 6 - ../Datasets/merged_csv.csv
+13:12:03 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 0
+13:12:10 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 1
+13:12:15 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 2
+13:12:23 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 3
+13:12:30 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 4
+13:21:46 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv
+13:21:51 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:21:51 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:21:52 [process_data.py:23 -           read_files()] INFO | Current file iteration 1 - ../Datasets/Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv
+13:21:54 [process_data.py:28 -           read_files()] INFO | 1: Chunk process 0
+13:21:54 [process_data.py:23 -           read_files()] INFO | Current file iteration 2 - ../Datasets/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv
+13:21:58 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 0
+13:21:59 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 1
+13:22:00 [process_data.py:23 -           read_files()] INFO | Current file iteration 3 - ../Datasets/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:23:01 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/good/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv
+13:23:06 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:23:06 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:23:08 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+13:23:16 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:23:22 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:23:23 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:23:26 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:25:19 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:25:25 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:25:26 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:25:30 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:28:15 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:28:21 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:28:22 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:28:25 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:29:34 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:29:40 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:29:41 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:29:44 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:30:28 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ./test.csv
+13:30:32 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:30:33 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:30:34 [process_data.py:36 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:40:42 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:40:48 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:40:49 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:40:52 [process_data.py:41 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:42:23 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:42:29 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:42:30 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:42:33 [process_data.py:43 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:42:57 [process_data.py:24 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:43:04 [process_data.py:29 -           read_files()] INFO | 0: Chunk process 0
+13:43:05 [process_data.py:29 -           read_files()] INFO | 0: Chunk process 1
+13:43:08 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:44:38 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:44:44 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:44:45 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:45:00 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:45:07 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:45:08 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:45:11 [process_data.py:43 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:45:15 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:45:22 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:45:23 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:45:23 [process_data.py:34 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:46:46 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:46:52 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:46:53 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:46:54 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:47:07 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:47:13 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:47:14 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:47:15 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/bad/Friday-16-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:47:34 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:52:03 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - ../Datasets/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv
+13:52:07 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:52:08 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:52:08 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:53:02 [process_data.py:23 -           read_files()] INFO | Current file iteration 1 - ../Datasets/Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv
+13:53:04 [process_data.py:28 -           read_files()] INFO | 1: Chunk process 0
+13:53:05 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Thursday-01-03-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:53:10 [process_data.py:23 -           read_files()] INFO | Current file iteration 2 - ../Datasets/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv
+13:53:14 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 0
+13:53:15 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 1
+13:53:15 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Thursday-22-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:54:11 [process_data.py:23 -           read_files()] INFO | Current file iteration 3 - ../Datasets/Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:54:18 [process_data.py:28 -           read_files()] INFO | 3: Chunk process 0
+13:54:19 [process_data.py:28 -           read_files()] INFO | 3: Chunk process 1
+13:54:19 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Friday-16-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:54:37 [process_data.py:23 -           read_files()] INFO | Current file iteration 4 - ../Datasets/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv
+13:54:42 [process_data.py:28 -           read_files()] INFO | 4: Chunk process 0
+13:54:43 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:54:52 [process_data.py:23 -           read_files()] INFO | Current file iteration 5 - ../Datasets/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv
+13:54:56 [process_data.py:28 -           read_files()] INFO | 5: Chunk process 0
+13:54:57 [process_data.py:28 -           read_files()] INFO | 5: Chunk process 1
+13:54:57 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Thursday-15-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+13:55:51 [process_data.py:23 -           read_files()] INFO | Current file iteration 6 - ../Datasets/merged_csv.csv
+13:55:56 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 0
+13:56:03 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 1
+13:56:08 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 2
+13:56:16 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 3
+13:56:23 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 4
+13:56:28 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 5
+13:56:33 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 6
+13:56:38 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 7
+13:56:45 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 8
+13:56:51 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 9
+13:56:58 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 10
+13:57:05 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 11
+13:57:12 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 12
+13:57:18 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 13
+13:57:25 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 14
+13:57:32 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 15
+13:57:34 [process_data.py:28 -           read_files()] INFO | 6: Chunk process 16
+13:58:02 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/merged_csv.csvnew.csv
+14:03:44 [process_data.py:23 -           read_files()] INFO | Current file iteration 7 - ../Datasets/Friday-23-02-2018_TrafficForML_CICFlowMeter.csv
+14:03:49 [process_data.py:28 -           read_files()] INFO | 7: Chunk process 0
+14:03:50 [process_data.py:28 -           read_files()] INFO | 7: Chunk process 1
+14:03:50 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Friday-23-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:04:44 [process_data.py:23 -           read_files()] INFO | Current file iteration 8 - ../Datasets/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv
+14:04:47 [process_data.py:28 -           read_files()] INFO | 8: Chunk process 0
+14:04:48 [process_data.py:28 -           read_files()] INFO | 8: Chunk process 1
+14:04:48 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:05:40 [process_data.py:23 -           read_files()] INFO | Current file iteration 9 - ../Datasets/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv
+14:05:44 [process_data.py:28 -           read_files()] INFO | 9: Chunk process 0
+14:05:45 [process_data.py:28 -           read_files()] INFO | 9: Chunk process 1
+14:05:45 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Friday-02-03-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:06:37 [process_data.py:23 -           read_files()] INFO | Current file iteration 10 - ../Datasets/Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv
+14:06:42 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 0
+14:06:49 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 1
+14:06:55 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 2
+14:07:01 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 3
+14:07:08 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 4
+14:07:14 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 5
+14:07:21 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 6
+14:07:27 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 7
+14:07:31 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:17:31 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (32465886, 84) 

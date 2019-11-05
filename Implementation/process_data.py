@@ -17,7 +17,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-def read_files(files, shuffle=False, prune=False):
+def read_files(files, clean_data, shuffle=False, prune=False):
   chunk_dfs = []
   for i in range(len(files)):
     logger.info("Current file iteration {0} - {1}".format(i, files[i]))
@@ -26,11 +26,19 @@ def read_files(files, shuffle=False, prune=False):
 
     for j, chunk in enumerate(pd.read_csv(files[i], chunksize=chunk_size)):  # todo remove nrows
       logger.info("%s: Chunk process %s" % (i, j))
-      chunk = chunk[chunk.Label.str.contains('labels') == False]  # Removes csv rows that have headers repeating
+      chunk = chunk[chunk.Label.str.contains('Label') == False]  # Removes csv rows that have headers repeating
       chunk_list.append(chunk)
 
     chunk_df = pd.concat(chunk_list)
+
+    if clean_data:
+      location = files[i] + "new.csv"
+      print(logger.info("Creating new cleaned csv at location: {0}".format(location)))
+      chunk_df.to_csv(location, index=False)
+
     chunk_dfs.append(chunk_df)
+
+
 
   dataframe = pd.concat(chunk_dfs, sort=True).reset_index(drop=True)
   logger.info("All files read, new dataframe created - dataframe shape: {0} ".format(dataframe.shape))
@@ -93,9 +101,9 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument("-d", "--data-location", help="location of dataset",
                       default=r"D:\Datasets\aws")  # todo remove default
-
+  parser.add_argument("-c", "--clean-data", help="creates new csv by removing excess rows",
+                      action="store_true")
   args = parser.parse_args()
   dataset_files = glob(args.data_location + r"/*.csv")
 
-  df = read_files(dataset_files)
-  print(df.info())
+  df = read_files(dataset_files, args.clean_data)

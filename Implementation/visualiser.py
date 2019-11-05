@@ -95,7 +95,7 @@ if __name__ == '__main__':
   parser.add_argument("-o", "--out", help="outfile path to save", default="out/")
   args = parser.parse_args()
 
-  dataset = read_files([args.filepath])  # todo remove hardcode
+  dataset = read_files([args.filepath], clean_data=False)  # todo remove hardcode
   print(dataset.head())
 
   if args.prune:
