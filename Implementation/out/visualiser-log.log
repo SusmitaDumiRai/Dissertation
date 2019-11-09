@@ -140,3 +140,105 @@
 14:40:29 [visualiser.py:77 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/Wednesday-28-02-2018_TrafficForML_CICFlowMeter/nans.png
 14:40:42 [visualiser.py:31 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/Wednesday-28-02-2018_TrafficForML_CICFlowMeter/boxplot.png
 14:40:46 [visualiser.py:63 -        visualise_pie()] INFO | Pie chart visualised at location: out/Wednesday-28-02-2018_TrafficForML_CICFlowMeter/pie.png
+13:50:05 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\Thursday-15-02-2018_TrafficForML_CICFlowMeter.csv
+13:50:10 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:50:11 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:50:12 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+13:50:13 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+13:50:14 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+13:50:41 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+13:50:51 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+13:50:51 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+13:52:27 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\Friday-02-03-2018_TrafficForML_CICFlowMeter.csv
+13:52:32 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:52:33 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:52:35 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+13:52:36 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+13:52:36 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+13:52:58 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+13:53:07 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+13:53:07 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+13:55:10 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+13:55:17 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+13:55:18 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+13:55:21 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+13:55:24 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+13:55:25 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:06:27 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+14:06:42 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+14:06:46 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:06:47 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:06:49 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048574, 80) 
+14:06:50 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:06:50 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:07:04 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:07:08 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:07:08 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:07:40 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Friday-23-02-2018_TrafficForML_CICFlowMeter.csv
+14:07:45 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:07:46 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:07:48 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+14:07:49 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:07:50 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:08:11 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:08:20 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:08:20 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:08:54 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csv
+14:09:00 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:09:07 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:09:14 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 2
+14:09:22 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 3
+14:09:30 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 4
+14:09:37 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 5
+14:09:45 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 6
+14:09:52 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 7
+14:10:56 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (7948748, 84) 
+14:11:03 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:11:06 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:14:11 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:15:15 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:15:15 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:16:36 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Thursday-21-03-2018_TrafficForML_CICFlowMeter.csv
+14:16:56 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv
+14:16:58 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:16:59 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (331100, 80) 
+14:17:00 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:17:00 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:17:10 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:17:14 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:17:14 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:18:17 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Thursday-22-02-2018_TrafficForML_CICFlowMeter.csv
+14:18:23 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:18:24 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:18:25 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+14:18:26 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:18:27 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:18:49 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:18:59 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:18:59 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:19:35 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Wednesday-14-02-2018_TrafficForML_CICFlowMeter.csv
+14:19:39 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:19:40 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:19:42 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+14:19:43 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:19:44 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:20:08 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:20:17 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:20:17 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:20:50 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Wednesday-21-02-2018_TrafficForML_CICFlowMeter.csv
+14:20:54 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:20:55 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:20:56 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1048575, 80) 
+14:20:57 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:20:58 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:21:10 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:21:14 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:21:14 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png
+14:21:46 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\cleaned\Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv
+14:21:49 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:21:50 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (613071, 80) 
+14:21:51 [visualiser.py:78 -       visualise_NaNs()] INFO | NaN graph visualised at location: out/nans.png
+14:21:51 [visualiser.py:25 -    visualise_boxplot()] INFO | Data being normalised: True
+14:22:08 [visualiser.py:32 -    visualise_boxplot()] INFO | Boxplot visualised at location: out/boxplot.png
+14:22:15 [utils.py:141 -    _init_num_threads()] INFO | NumExpr defaulting to 6 threads.
+14:22:15 [visualiser.py:64 -        visualise_pie()] INFO | Pie chart visualised at location: out/pie.png

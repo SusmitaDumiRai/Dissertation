@@ -161,3 +161,14 @@
 14:07:27 [process_data.py:28 -           read_files()] INFO | 10: Chunk process 7
 14:07:31 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: ../Datasets/Thuesday-20-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
 14:17:31 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (32465886, 84) 
+14:03:04 [process_data.py:23 -           read_files()] INFO | Current file iteration 0 - C:\Users\kxd\Documents\Thesis_Susi\data\to_clean\Friday-16-02-2018_TrafficForML_CICFlowMeter.csv
+14:03:10 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 0
+14:03:11 [process_data.py:28 -           read_files()] INFO | 0: Chunk process 1
+14:03:12 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: C:\Users\kxd\Documents\Thesis_Susi\data\to_clean\Friday-16-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:03:34 [process_data.py:23 -           read_files()] INFO | Current file iteration 1 - C:\Users\kxd\Documents\Thesis_Susi\data\to_clean\Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv
+14:03:37 [process_data.py:28 -           read_files()] INFO | 1: Chunk process 0
+14:03:37 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: C:\Users\kxd\Documents\Thesis_Susi\data\to_clean\Thursday-01-03-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:03:43 [process_data.py:23 -           read_files()] INFO | Current file iteration 2 - C:\Users\kxd\Documents\Thesis_Susi\data\to_clean\Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csv
+14:03:48 [process_data.py:28 -           read_files()] INFO | 2: Chunk process 0
+14:03:49 [process_data.py:36 -           read_files()] INFO | Creating new cleaned csv at location: C:\Users\kxd\Documents\Thesis_Susi\data\to_clean\Wednesday-28-02-2018_TrafficForML_CICFlowMeter.csvnew.csv
+14:04:05 [process_data.py:44 -           read_files()] INFO | All files read, new dataframe created - dataframe shape: (1992745, 80) 
