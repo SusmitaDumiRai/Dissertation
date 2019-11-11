@@ -17,11 +17,8 @@ logging.basicConfig(filename=r"out/visualiser-log.log",
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-from Implementation.process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, \
+from process_data import read_files, get_numerical_data, drop_nan_rows, normalise_data, \
   get_null_dataframe
-
-from Implementation.classifier import label_encode_class
-
 
 def visualise_boxplot(data, fp, normalise=True, save=False):
   name = fp + "boxplot.png"
@@ -38,15 +35,15 @@ def visualise_boxplot(data, fp, normalise=True, save=False):
   plt.show()
 
 
-def visualise_pie(data, fp, save=False):
-  name = fp + "pie.png"
-  protocols = data.groupby(['Label']).size().reset_index(name='count')
+def visualise_pie(data, fp, attribute='Protocol', save=False):
+  name = fp + attribute + "_pie.png"
+  attr_df = data.groupby([attribute]).size().reset_index(name='count')
 
-  protocols['count_norm'] = [float(i) / sum(protocols['count'])
-                             for i in protocols['count']]
+  attr_df['count_norm'] = [float(i) / sum(attr_df['count'])
+                             for i in attr_df['count']]
 
-  pr_x = protocols['Label']
-  pr_y = protocols['count']
+  pr_x = attr_df[attribute]
+  pr_y = attr_df['count']
   percent = 100. * pr_y / pr_y.sum()
 
   patches, texts = plt.pie(pr_y, startangle=80, radius=1.2)
@@ -54,13 +51,13 @@ def visualise_pie(data, fp, save=False):
 
   sort_legend = True
   if sort_legend:
-    patches, labels, dummy = zip(*sorted(zip(patches, labels, protocols['count']),
+    patches, labels, dummy = zip(*sorted(zip(patches, labels, attr_df['count']),
                                          key=lambda x: x[2],
                                          reverse=True))
 
   plt.legend(patches, labels, loc='best',
              bbox_to_anchor=(0.8, 1.), fontsize=10)
-  plt.title('Labels')
+  plt.title(attribute)
   plt.tight_layout()
 
   if save:
@@ -101,8 +98,8 @@ def visualise_timeseries(data, fp, attributes, save=False):
   data = data.asfreq(freq='30s')
 
   plt.tight_layout()
-  data.plot(y=attributes, subplots=True, figsize=(20, 10))
-
+  logger.info("Plotting {0} attributes".format(attributes))
+  data.plot(y=attributes, subplots=True, figsize=(30, 20))
 
   if save:
     plt.savefig(name)
@@ -132,19 +129,33 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   dataset = read_files([args.filepath], clean_data=False)
-  print(dataset.head())
+
+  # todo fix this.
+  benign_only = False
+  malware_only = False
+
+  out = args.out
+
+  if benign_only:
+    out = args.out + "benign_"
+    dataset = dataset.loc[dataset['Label'] == 'Benign']
+    logger.info("Only {0} data selected".format(dataset['Label'].unique(), dataset.shape))
+  elif malware_only:
+    out = args.out + "malware_"
+    dataset = dataset.loc[dataset['Label'] != 'Benign']
+    logger.info("Only {0} data selected - {1}".format(dataset['Label'].unique(), dataset.shape))
 
   if args.prune:
     pruned_dataset = drop_nan_rows(dataset)
 
   if args.nans:
-    visualise_NaNs(dataset, args.out, save=True)
+    visualise_NaNs(dataset, out, save=True)
 
   if args.boxplot:
-    visualise_boxplot(get_numerical_data(dataset), args.out, save=True)
+    visualise_boxplot(get_numerical_data(dataset), out, save=True)
 
   if args.pie:
-    visualise_pie(dataset, args.out, save=True)
+    visualise_pie(dataset, out, save=True)
 
   if args.timeseries:
-    visualise_timeseries(dataset, args.out, args.attributes, save=True)
+    visualise_timeseries(dataset, out, args.attributes, save=True)
