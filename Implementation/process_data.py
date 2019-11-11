@@ -33,7 +33,7 @@ def read_files(files, clean_data, shuffle=False, prune=False):
 
     if clean_data:
       location = files[i] + "new.csv"
-      print(logger.info("Creating new cleaned csv at location: {0}".format(location)))
+      logger.info("Creating new cleaned csv at location: {0}".format(location))
       chunk_df.to_csv(location, index=False)
 
     chunk_dfs.append(chunk_df)
