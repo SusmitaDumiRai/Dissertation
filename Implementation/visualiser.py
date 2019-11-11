@@ -22,6 +22,7 @@ from process_data import read_files, get_numerical_data, drop_nan_rows, normalis
 def visualise_boxplot(data, fp, normalise=True, save=False):
   name = fp + "boxplot.png"
   if normalise:
+    logger.info("Data being normalised: {0}".format(normalise))
     data = normalise_data(data)
   data.boxplot(column=list(data), figsize=(30, 5), rot=90)
   plt.tight_layout()
