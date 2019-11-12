@@ -60,7 +60,7 @@ def split_data(data, test_size=0.3, normalise=False):
 
 
 def split_time_series(data, normalise=True):
-  no_of_split = int((len(data) - 3) / 3)  # 67-33
+  no_of_split = 3# int((len(data) - 3) / 3)  # 67-33
   categorical_columns = data.select_dtypes(['object'])
   timestamp_columns = ['Timestamp']
 
@@ -81,8 +81,17 @@ def split_time_series(data, normalise=True):
   for train_index, test_index in time_series_split.split(X):
     # To get the indices
     logger.info("Train index: {0} - Test index: {1}".format(train_index, test_index))
-    X_train, X_test = X[train_index], X[test_index]
+    X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+    #print("X: {0}".format(X))
+    #print("Xtrain: {0}".format(X_train))
+    #print("Xtest: {0}".format(X_test))
     y_train, y_test = y[train_index], y[test_index]
+    #print("Y: {0}".format(y))
+    #print("Y_train: {0}".format(y_train))
+    #print("Y_test: {0}".format(y_test))
+    logger.info("Observations: {0}".format(len(train_index) + len(test_index)))
+    logger.info("Training observations: {0}".format(len(train_index)))
+    logger.info("Testing observations: {0}".format(len(test_index)))
     yield X_train, X_test, y_train, y_test
 
 
@@ -110,14 +119,15 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=True,):
   out = fp + "svm-model.sav"
 
   if time_series:
-    for i, X_train, X_test, y_train, y_test in enumerate(split_time_series(data)):
+    for i, Xy in enumerate(split_time_series(data)):
+      X_train, X_test, y_train, y_test = Xy
       logger.info("Support vector machine classifier -- TIME SERIES -- initialised")
       start_time = time.time()
       clf = svm.LinearSVC(verbose=10)
       clf.fit(X_train, y_train)
 
       if save:
-        out = fp + "svm-model-" + i + ".sav"
+        out = ("{0}-svm-model-{1}.sav").format(fp, i)
         logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
         pickle.dump(clf, open(out, 'wb'))
 
@@ -148,13 +158,13 @@ if __name__ == '__main__':
   handler.setFormatter(formatter)
   logger.addHandler(handler)
 
-  original_dataset, pruned_dataset = read_files(
-    [r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False, prune=True)  # todo remove hardcode
+  # original_dataset, pruned_dataset = read_files([r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False, prune=True)  # todo remove hardcode
+  original_dataset = read_files([r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False)  # todo remove hardcode
 
   pd.plotting.register_matplotlib_converters()  # todo convert this to a function
   original_dataset['Timestamp'] = pd.to_datetime(original_dataset['Timestamp'], format="%d/%m/%Y %H:%M:%S")
 
   original_dataset = original_dataset.sort_values(['Timestamp'], ascending=[True]).reset_index(drop=True)
-  # print(list(original_dataset))
+  print(original_dataset.index)
   # random_forest_classifier(pruned_dataset, True)
   support_vector_machine_classifier(original_dataset, fp="out/", save=True)
