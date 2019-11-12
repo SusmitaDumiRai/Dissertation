@@ -82,7 +82,7 @@ def split_time_series(data, normalise=True):
     # To get the indices
     logger.info("Train index: {0} - Test index: {1}".format(train_index, test_index))
     X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-    #print("X: {0}".format(X))
+    # print("X: {0}".format(X))
     #print("Xtrain: {0}".format(X_train))
     #print("Xtest: {0}".format(X_test))
     y_train, y_test = y[train_index], y[test_index]
@@ -133,6 +133,7 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=True,):
 
       y_pred = clf.predict(X_test)
       logger.info("Support vector machine accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
+      logger.info("Support vector machine confusion matrix: {0}".format(metrics.confusion_matrix(y_test, y_pred)))
       logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
   else:
     X_train, X_test, y_train, y_test = split_data(data, normalise=True)
@@ -148,6 +149,7 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=True,):
 
     y_pred = clf.predict(X_test)
     logger.info("Support vector machine accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
+    logger.info("Support vector machine confusion matrix: {0}".format(metrics.confusion_matrix(y_test, y_pred)))
     logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
 
 
