@@ -59,15 +59,18 @@ def split_data(data, test_size=0.3, normalise=False):
 
 
 
-def split_time_series(data):
+def split_time_series(data, normalise=True):
   no_of_split = int((len(data) - 3) / 3)  # 67-33
   categorical_columns = data.select_dtypes(['object'])
+  timestamp_columns = ['Timestamp']
 
   output = ['Label']
-  inputs = [label for label in list(data) if label not in output and label not in categorical_columns]
+  inputs = [label for label in list(data) if label not in output and label not in categorical_columns
+            and label not in timestamp_columns]
 
   if normalise:
     logger.info("Data is being normalised.")
+    logger.info("Inputs: {0}".format(inputs))
     data[inputs] = normalise_data(data[inputs])
 
   X = data[inputs]
@@ -76,12 +79,10 @@ def split_time_series(data):
   time_series_split = TimeSeriesSplit(n_splits=no_of_split)
 
   for train_index, test_index in time_series_split.split(X):
-    print("TRAIN:", train_index, "TEST:", test_index)
-
     # To get the indices
+    logger.info("Train index: {0} - Test index: {1}".format(train_index, test_index))
     X_train, X_test = X[train_index], X[test_index]
     y_train, y_test = y[train_index], y[test_index]
-
     yield X_train, X_test, y_train, y_test
 
 
@@ -148,12 +149,12 @@ if __name__ == '__main__':
   logger.addHandler(handler)
 
   original_dataset, pruned_dataset = read_files(
-    [r"../Datasets/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], prune=True)  # todo remove hardcode
+    [r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False, prune=True)  # todo remove hardcode
 
   pd.plotting.register_matplotlib_converters()  # todo convert this to a function
-  original_dataset['Timestamp'] = pd.to_datetime(data['Timestamp'], format="%d/%m/%Y %H:%M:%S")
+  original_dataset['Timestamp'] = pd.to_datetime(original_dataset['Timestamp'], format="%d/%m/%Y %H:%M:%S")
 
-  original_dataset = original_dataset.sort_values(['Timestamp'], ascending=[True])
-
+  original_dataset = original_dataset.sort_values(['Timestamp'], ascending=[True]).reset_index(drop=True)
+  # print(list(original_dataset))
   # random_forest_classifier(pruned_dataset, True)
-  support_vector_machine_classifier(pruned_dataset, True)
+  support_vector_machine_classifier(original_dataset, fp="out/", save=True)
