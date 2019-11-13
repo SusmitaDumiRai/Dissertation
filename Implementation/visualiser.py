@@ -81,6 +81,36 @@ def visualise_NaNs(data, fp, save=False):
   plt.show()
 
 
+
+def visualise_malware_time_chunks(data, fp, save=False):
+  name = fp + "barplot.png"
+  pd.plotting.register_matplotlib_converters()  # todo convert this to a function
+  data['Timestamp'] = pd.to_datetime(data['Timestamp'], format="%d/%m/%Y %H:%M:%S")
+  data = data.sort_values(['Timestamp', 'Label'], ascending=[True, False])
+  # data = data.groupby('Timestamp').apply(lambda x: x.sort_values('Label'))
+  # print(data['Timestamp'], data['Label'])
+  # data = data.sort_values(by='Timestamp').groupby('Label')
+  # print(type(data))
+  # print(data['Timestamp'], data['Label'])
+  # for index, row in data.iterrows():
+  #  print("index: {0}, label: {1}, timestamp:{2}".format(index, row['Label'], row['Timestamp']))
+
+  count_data = data.groupby(['Timestamp', 'Label']).size().reset_index(name='count per second')
+  # select_columns_data = count_data[['Timestamp', 'Label', 'count per second']].copy()
+  for index, row in count_data.iterrows():
+    print("index: {0}, label: {1}, timestamp: {2}, count:{3}".format(index, row['Label'], row['Timestamp'],
+                                                                     row['count per second']))
+  # count_malware_data = count_data[count_data['Label'] != "Benign"]
+  # count_benign_data = count_data[count_data['Label'] == "Benign"]
+
+  # plt.bar(count_malware_data['Timestamp'], count_malware_data['count per second'], c='r')
+  # plt.bar(count_benign_data['Timestamp'], count_benign_data['count per second'], c='g')
+  # count_data.plot(x='Timestamp', y=['count per second', 'Label'], kind='bar')
+
+  if save:
+    plt.savefig(name)
+    logger.info("Bargraph visualised at location: {0}".format(name))
+  plt.show()
 def visualise_timeseries(data, fp, attributes, save=False):
   name = fp + "timeseries.png"
 
@@ -135,6 +165,8 @@ if __name__ == '__main__':
   malware_only = False
 
   out = args.out
+
+  visualise_malware_time_chunks(dataset, out, save=True)
 
   if benign_only:
     out = args.out + "benign_"
