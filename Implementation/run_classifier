@@ -1,0 +1,9 @@
+#!/bin/bash
+
+search_dir="../Datasets/cleaned"
+for entry in "${search_dir}"/*.csv
+do
+  csv_name=${entry##*/}
+  folder_name=${csv_name%.*}
+  python classifier.py -f $entry -o "out/$folder_name/"
+done
