@@ -1,3 +1,4 @@
+import csv
 import sys
 import pickle
 import time
@@ -97,9 +98,10 @@ def split_time_series(data, normalise=True):
 
 def generate_classification_report(fp, method, y_test, y_pred):
   report = metrics.classification_report(y_test, y_pred, output_dict=True)
-  report_df = pd.DataFrame(report).transpose()
+  report_df = pd.DataFrame(report).T
+
   out = r"{0}/{1}-classification_report.csv".format(fp, method)
-  report_df.to_csv(out, index=False)
+  report_df.to_csv(out)
   logger.info("Saving classification report at location: {0}".format(out))
   return report
 
