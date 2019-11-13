@@ -2,7 +2,7 @@ import sys
 import pickle
 import time
 import logging
-
+import argparse
 import pandas as pd
 
 from sklearn import metrics
@@ -41,9 +41,10 @@ def label_encode_class(data):
 def split_data(data, test_size=0.3, normalise=False):
   from sklearn.model_selection import train_test_split
   categorical_columns = data.select_dtypes(['object'])
-
+  timestamp_columns = ['Timestamp']
   output = ['Label']
-  inputs = [label for label in list(data) if label not in output and label not in categorical_columns]
+  inputs = [label for label in list(data) if label not in output and label not in categorical_columns
+            and label not in timestamp_columns]
 
   if normalise:
     logger.info("Data is being normalised.")
@@ -51,7 +52,6 @@ def split_data(data, test_size=0.3, normalise=False):
 
   X = data[inputs]
   y = label_encode_class(data[output])
-
   logger.info("Y/Output variable {0} with shape {1}".format(output, y.shape))
   logger.info("X/Input variables {0} with shape {1}".format(inputs, X.shape))
   logger.info("Train vs Test split: {0}-{1}".format(1 - test_size, test_size))
@@ -95,9 +95,17 @@ def split_time_series(data, normalise=True):
     yield X_train, X_test, y_train, y_test
 
 
-def random_forest_classifier(data, save=False, fp=r"out/rf-model.sav"):
-  from sklearn.ensemble import RandomForestClassifier
+def generate_classification_report(fp, method, y_test, y_pred):
+  report = metrics.classification_report(y_test, y_pred, output_dict=True)
+  report_df = pd.DataFrame(report).transpose()
+  out = r"{0}/{1}-classification_report.csv".format(fp, method)
+  report_df.to_csv(out, index=False)
+  logger.info("Saving classification report at location: {0}".format(out))
+  return report
 
+def random_forest_classifier(data, fp, save=False):
+  from sklearn.ensemble import RandomForestClassifier
+  out = r"{0}/random-forest-model.sav".format(fp)
   X_train, X_test, y_train, y_test = split_data(data)
 
   logger.info("Random forest classifier -- initialised")
@@ -105,18 +113,24 @@ def random_forest_classifier(data, save=False, fp=r"out/rf-model.sav"):
   clf = RandomForestClassifier(n_estimators=100, verbose=2)
   clf.fit(X_train, y_train)
 
+  feature_importances = pd.DataFrame(clf.feature_importances_, index=X_train.columns,
+                                     columns=['importance']).sort_values('importance', ascending=False)
+  logger.info("Feature importance: {0}".format(feature_importances.head(5)))
+  feature_importances.to_csv(r"{0}/random-forest-feature-importance.csv".format(fp))
   if save:
-    logger.info("Saving RANDOM-FOREST-CLASSIFIER-MODEL at location: %s" % fp)
-    pickle.dump(clf, open(fp, 'wb'))
+    logger.info("Saving RANDOM-FOREST-CLASSIFIER-MODEL at location: %s" % out)
+    pickle.dump(clf, open(out, 'wb'))
 
   y_pred = clf.predict(X_test)
+  report = generate_classification_report(fp, "random-forest", y_test, y_pred)
   logger.info("Random forest classifier accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
+  logger.info("Random forest classifier classification report: {0}".format(report))
   logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
 
 
 def support_vector_machine_classifier(data, fp, save=False, time_series=True,):
   from sklearn import svm
-  out = fp + "svm-model.sav"
+  out = r"{0}/svm-model.sav".format(fp)
 
   if time_series:
     for i, Xy in enumerate(split_time_series(data)):
@@ -127,13 +141,15 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=True,):
       clf.fit(X_train, y_train)
 
       if save:
-        out = ("{0}-svm-model-{1}.sav").format(fp, i)
+        out = ("{0}/svm-model-{1}.sav").format(fp, i)
         logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
         pickle.dump(clf, open(out, 'wb'))
 
       y_pred = clf.predict(X_test)
+      report = generate_classification_report(fp, "svm-{0}".format(i), y_test, y_pred)
+
       logger.info("Support vector machine accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
-      logger.info("Support vector machine confusion matrix: {0}".format(metrics.confusion_matrix(y_test, y_pred)))
+      logger.info("Support vector machine classification report:{0}".format(report))
       logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
   else:
     X_train, X_test, y_train, y_test = split_data(data, normalise=True)
@@ -148,8 +164,9 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=True,):
       pickle.dump(clf, open(out, 'wb'))
 
     y_pred = clf.predict(X_test)
+    report = generate_classification_report(fp, "svm", y_test, y_pred)
     logger.info("Support vector machine accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
-    logger.info("Support vector machine confusion matrix: {0}".format(metrics.confusion_matrix(y_test, y_pred)))
+    logger.info("Support vector machine confusion matrix: {0}".format(report))
     logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
 
 
@@ -160,13 +177,17 @@ if __name__ == '__main__':
   handler.setFormatter(formatter)
   logger.addHandler(handler)
 
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-f", "--file-location", help="location to files.", default="../Datasets/cleaned")
+  parser.add_argument("-o", "--out", help="out folder path", default="out/")
+
+  args = parser.parse_args()
   # original_dataset, pruned_dataset = read_files([r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False, prune=True)  # todo remove hardcode
-  original_dataset = read_files([r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False)  # todo remove hardcode
+  original_dataset = read_files([args.file_location], clean_data=False)  # todo remove hardcode
 
   pd.plotting.register_matplotlib_converters()  # todo convert this to a function
   original_dataset['Timestamp'] = pd.to_datetime(original_dataset['Timestamp'], format="%d/%m/%Y %H:%M:%S")
-
   original_dataset = original_dataset.sort_values(['Timestamp'], ascending=[True]).reset_index(drop=True)
-  print(original_dataset.index)
-  # random_forest_classifier(pruned_dataset, True)
-  support_vector_machine_classifier(original_dataset, fp="out/", save=True)
+  logger.info("Data is being sorted by time")
+  support_vector_machine_classifier(original_dataset, fp=args.out, save=True)
+  random_forest_classifier(original_dataset,fp=args.out, save=True)
