@@ -30,7 +30,7 @@ def make_dir(path):
     logger.info("Creating directory at path: {0}".format(path))
     os.makedirs(path)
 
-def label_encode_class(data,):  # todo pass out.
+def label_encode_class(data): 
   def label_encoder_mapping(le):
     # todo save this label encoder later for prediction.
     return dict(zip(le.classes_, le.transform(le.classes_)))
@@ -42,13 +42,10 @@ def label_encode_class(data,):  # todo pass out.
 
   logger.info("Label encoder mapping {0}".format(label_encoder_mapping(le)))
 
-  if save:  # todo fix this for time series, does not know which iteration is which.
-    with open('{0}/label-encoder-mapping.txt'.format(out), 'w') as f:
-      file.write(json.dumps(label_encoder_mapping(le)))
   return le.transform(data).ravel(), label_encoder_mapping(le)
 
 
-def split_data(data, test_size=0.3, out, save, normalise=False):
+def split_data(data, test_size=0.3, normalise=False):
   from sklearn.model_selection import train_test_split
   categorical_columns = data.select_dtypes(['object'])
   excluded_columns = ['Timestamp', 'Dst Port']
@@ -61,15 +58,15 @@ def split_data(data, test_size=0.3, out, save, normalise=False):
     data[inputs] = normalise_data(data[inputs])
 
   X = data[inputs]
-  y = label_encode_class(data[output], out, save)
+  y, mapping = label_encode_class(data[output])
   logger.info("Y/Output variable {0} with shape {1}".format(output, y.shape))
   logger.info("X/Input variables {0} with shape {1}".format(inputs, X.shape))
   logger.info("Train vs Test split: {0}-{1}".format(1 - test_size, test_size))
-  return train_test_split(X, y, test_size=test_size)  # 70% training and 30% test
+  return train_test_split(X, y, test_size=test_size), mapping  # 70% training and 30% test
 
 
 
-def split_time_series(data, out, save, normalise=True):
+def split_time_series(data, normalise=True):
   no_of_split = 3# int((len(data) - 3) / 3)  # 67-33
   categorical_columns = data.select_dtypes(['object'])
   excluded_columns = ['Timestamp', 'Dst Port']
@@ -84,7 +81,7 @@ def split_time_series(data, out, save, normalise=True):
     data[inputs] = normalise_data(data[inputs])
 
   X = data[inputs]
-  y = label_encode_class(data[output], out, save)
+  y, mapping = label_encode_class(data[output])
 
   time_series_split = TimeSeriesSplit(n_splits=no_of_split)
 
@@ -102,7 +99,7 @@ def split_time_series(data, out, save, normalise=True):
     logger.info("Observations: {0}".format(len(train_index) + len(test_index)))
     logger.info("Training observations: {0}".format(len(train_index)))
     logger.info("Testing observations: {0}".format(len(test_index)))
-    yield X_train, X_test, y_train, y_test
+    yield X_train, X_test, y_train, y_test, mapping
 
 
 def generate_classification_report(fp, method, y_test, y_pred, save=False):
@@ -120,8 +117,8 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
   out = r"{0}/random-forest-model.sav".format(fp)
 
   if time_series:
-    for i, Xy in enumerate(split_time_series(data, fp, save)):
-      X_train, X_test, y_train, y_test = Xy
+    for i, Xy in enumerate(split_time_series(data)):
+      X_train, X_test, y_train, y_test, mapping = Xy
       logger.info("Random forest classifier -- TIME SERIES -- initialised")
       start_time = time.time()
       clf = RandomForestClassifier(n_estimators=100, verbose=2)
@@ -132,6 +129,11 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
       logger.info("Feature importance: {0}".format(feature_importances.head(5)))
 
       if save:
+        label_out = '{0}/random-forest-label-encoder-mapping-{1}.txt'.format(fp, i)
+        logger.info("Saving label encoder data at location: %s" % label_out)
+        with open(label_out, 'w') as f:
+          file.write(json.dumps(mapping))
+
         feature_importances.to_csv(r"{0}/random-forest-feature-importance-{1}.csv".format(fp, i))
 
         out = ("{0}/random-forest-model-{1}.sav").format(fp, i)
@@ -145,7 +147,7 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
       logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
 
   else:
-    X_train, X_test, y_train, y_test = split_data(data, fp, save)
+    X_train, X_test, y_train, y_test, mapping = split_data(data)
 
     logger.info("Random forest classifier -- initialised")
     start_time = time.time()
@@ -157,6 +159,11 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
     logger.info("Feature importance: {0}".format(feature_importances.head(5)))
     feature_importances.to_csv(r"{0}/random-forest-feature-importance.csv".format(fp))
     if save:
+      label_out = '{0}/random-forest-label-encoder-mapping.txt'.format(fp)
+      logger.info("Saving label encoder data at location: %s" % label_out)
+      with open(label_out, 'w') as f:
+        file.write(json.dumps(mapping))
+      
       logger.info("Saving RANDOM-FOREST-CLASSIFIER-MODEL at location: %s" % out)
       pickle.dump(clf, open(out, 'wb'))
 
@@ -173,13 +180,18 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
 
   if time_series:
     for i, Xy in enumerate(split_time_series(data, fp, save)):
-      X_train, X_test, y_train, y_test = Xy
+      X_train, X_test, y_train, y_test, mapping = Xy
       logger.info("Support vector machine classifier -- TIME SERIES -- initialised")
       start_time = time.time()
       clf = svm.LinearSVC(verbose=10)
       clf.fit(X_train, y_train)
 
       if save:
+        label_out = '{0}/svm-label-encoder-mapping-{1}.txt'.format(fp, i)
+        logger.info("Saving label encoder data at location: %s" % label_out)
+        with open(label_out, 'w') as f:
+          file.write(json.dumps(mapping))
+
         out = ("{0}/svm-model-{1}.sav").format(fp, i)
         logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
         pickle.dump(clf, open(out, 'wb'))
@@ -199,6 +211,11 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
     clf.fit(X_train, y_train)
 
     if save:
+      label_out = '{0}/svm-label-encoder-mapping.txt'.format(fp)
+      logger.info("Saving label encoder data at location: %s" % label_out)
+      with open(label_out, 'w') as f:
+        file.write(json.dumps(mapping))
+      
       logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
       pickle.dump(clf, open(out, 'wb'))
 
