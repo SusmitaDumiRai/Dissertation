@@ -1,0 +1,3 @@
+,0
+Benign,0
+DDoS attacks-LOIC-HTTP,1
