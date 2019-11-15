@@ -30,7 +30,7 @@ def make_dir(path):
     logger.info("Creating directory at path: {0}".format(path))
     os.makedirs(path)
 
-def label_encode_class(data): 
+def label_encode_class(data):
   def label_encoder_mapping(le):
     # todo save this label encoder later for prediction.
     return dict(zip(le.classes_, le.transform(le.classes_)))
@@ -82,7 +82,6 @@ def split_time_series(data, normalise=True):
 
   X = data[inputs]
   y, mapping = label_encode_class(data[output])
-
   time_series_split = TimeSeriesSplit(n_splits=no_of_split)
 
   for train_index, test_index in time_series_split.split(X):
@@ -119,6 +118,7 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
   if time_series:
     for i, Xy in enumerate(split_time_series(data)):
       X_train, X_test, y_train, y_test, mapping = Xy
+      print(type(mapping))
       logger.info("Random forest classifier -- TIME SERIES -- initialised")
       start_time = time.time()
       clf = RandomForestClassifier(n_estimators=100, verbose=2)
@@ -131,9 +131,7 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
       if save:
         label_out = '{0}/random-forest-label-encoder-mapping-{1}.txt'.format(fp, i)
         logger.info("Saving label encoder data at location: %s" % label_out)
-        with open(label_out, 'w') as f:
-          file.write(json.dumps(mapping))
-
+        pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
         feature_importances.to_csv(r"{0}/random-forest-feature-importance-{1}.csv".format(fp, i))
 
         out = ("{0}/random-forest-model-{1}.sav").format(fp, i)
@@ -147,7 +145,8 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
       logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
 
   else:
-    X_train, X_test, y_train, y_test, mapping = split_data(data)
+    Xy, mapping = split_data(data)
+    X_train, X_test, y_train, y_test = Xy
 
     logger.info("Random forest classifier -- initialised")
     start_time = time.time()
@@ -161,9 +160,8 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
     if save:
       label_out = '{0}/random-forest-label-encoder-mapping.txt'.format(fp)
       logger.info("Saving label encoder data at location: %s" % label_out)
-      with open(label_out, 'w') as f:
-        file.write(json.dumps(mapping))
-      
+      pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
+
       logger.info("Saving RANDOM-FOREST-CLASSIFIER-MODEL at location: %s" % out)
       pickle.dump(clf, open(out, 'wb'))
 
@@ -179,7 +177,7 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
   out = r"{0}/svm-model.sav".format(fp)
 
   if time_series:
-    for i, Xy in enumerate(split_time_series(data, fp, save)):
+    for i, Xy in enumerate(split_time_series(data)):
       X_train, X_test, y_train, y_test, mapping = Xy
       logger.info("Support vector machine classifier -- TIME SERIES -- initialised")
       start_time = time.time()
@@ -189,8 +187,7 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
       if save:
         label_out = '{0}/svm-label-encoder-mapping-{1}.txt'.format(fp, i)
         logger.info("Saving label encoder data at location: %s" % label_out)
-        with open(label_out, 'w') as f:
-          file.write(json.dumps(mapping))
+        pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
 
         out = ("{0}/svm-model-{1}.sav").format(fp, i)
         logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
@@ -203,7 +200,8 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
       logger.info("Support vector machine classification report:{0}".format(report))
       logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
   else:
-    X_train, X_test, y_train, y_test = split_data(data, fp, save, normalise=True)
+    Xy, mapping = split_data(data, normalise=True)
+    X_train, X_test, y_train, y_test = Xy
 
     logger.info("Support vector machine classifier -- initialised")
     start_time = time.time()
@@ -213,9 +211,9 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
     if save:
       label_out = '{0}/svm-label-encoder-mapping.txt'.format(fp)
       logger.info("Saving label encoder data at location: %s" % label_out)
-      with open(label_out, 'w') as f:
-        file.write(json.dumps(mapping))
-      
+      pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
+
+
       logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
       pickle.dump(clf, open(out, 'wb'))
 
@@ -246,5 +244,5 @@ if __name__ == '__main__':
   original_dataset['Timestamp'] = pd.to_datetime(original_dataset['Timestamp'], format="%d/%m/%Y %H:%M:%S")
   original_dataset = original_dataset.sort_values(['Timestamp'], ascending=[True]).reset_index(drop=True)
   logger.info("Data is being sorted by time")
-  support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=True)
-  random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=True)
+  support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
+  random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=False)
