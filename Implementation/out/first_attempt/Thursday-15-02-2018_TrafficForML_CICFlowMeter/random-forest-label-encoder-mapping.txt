@@ -1,0 +1,4 @@
+,0
+Benign,0
+DoS attacks-GoldenEye,1
+DoS attacks-Slowloris,2
