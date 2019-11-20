@@ -23,7 +23,7 @@ logging.basicConfig(filename=r"out/classifier-log.log",  # todo fix this
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-from process_data import read_files, normalise_data
+from process_data import read_files, normalise_data, sort_time
 
 def make_dir(path):
   if not os.path.exists(path):
@@ -139,7 +139,7 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
         pickle.dump(clf, open(out, 'wb'))
 
       y_pred = clf.predict(X_test)
-      report = generate_classification_report(fp, "random-forest", y_test, y_pred, save)
+      report = generate_classification_report(fp, "random-forest-{0}".format(i), y_test, y_pred, save)
       logger.info("Random forest classifier accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
       logger.info("Random forest classifier classification report: {0}".format(report))
       logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
@@ -237,12 +237,9 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
   make_dir(args.out)
-  # original_dataset, pruned_dataset = read_files([r"../Datasets/cleaned/Friday-02-03-2018_TrafficForML_CICFlowMeter.csv"], clean_data=False, prune=True)  # todo remove hardcode
+
   original_dataset = read_files([args.file_location], clean_data=False)  # todo remove hardcode
 
-  pd.plotting.register_matplotlib_converters()  # todo convert this to a function
-  original_dataset['Timestamp'] = pd.to_datetime(original_dataset['Timestamp'], format="%d/%m/%Y %H:%M:%S")
-  original_dataset = original_dataset.sort_values(['Timestamp'], ascending=[True]).reset_index(drop=True)
-  logger.info("Data is being sorted by time")
+  original_dataset = sort_time(original_dataset)
   support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
   random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=False)
