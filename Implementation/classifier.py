@@ -111,9 +111,38 @@ def generate_classification_report(fp, method, y_test, y_pred, save=False):
     logger.info("Saving classification report at location: {0}".format(out))
   return report
 
+
+def save_metrics(fp, method_name, mapping, accuracy, time, i=""):
+  encoder_out = '{0}/{1}-encoder-mapping-{2}.txt'.format(fp, method_name, i)
+  logger.info("Saving label encoder data at location: %s" % encoder_out)
+  pd.DataFrame.from_dict(mapping, orient='index').to_csv(encoder_out)
+
+  metrics_out = '{0}/{1}-metrics-{2}.txt'.format(fp, method_name, i)
+  metrics_dict = {'accuracy': accuracy,
+                  'run-time': time}
+
+  logger.info("Accuracy: {0}".format(accuracy))
+  logger.info("Classifier took {0} seconds to train".format(time))
+  logger.info("Saving metrics file at location {0}".format(metrics_out))
+  pd.DataFrame.from_dict(metrics_dict, orient='index').to_csv(metrics_out)
+
+
+def save_feature_importances(feature_importances, fp, i=""):
+  feature_importances.to_csv(r"{0}/random-forest-feature-importance-{1}.csv".format(fp, i))
+
+
+def save_model(model, method_name, fp, i=""):
+  out = ("{0}/{1}-{2}.sav").format(fp, method_name, i)
+  logger.info("Saving {0} model at location: {1}".format(method_name, out))
+  pickle.dump(model, open(out, 'wb'))
+
+
+def calculate_time(start_time):
+  return time.time() - start_time
+
 def random_forest_classifier(data, fp, save=False, time_series=False):
   from sklearn.ensemble import RandomForestClassifier
-  out = r"{0}/random-forest-model.sav".format(fp)
+  method_name = "random-forest"
 
   if time_series:
     for i, Xy in enumerate(split_time_series(data)):
@@ -126,23 +155,15 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
       feature_importances = pd.DataFrame(clf.feature_importances_, index=X_train.columns,
                                          columns=['importance']).sort_values('importance', ascending=False)
 
-      logger.info("Feature importance: {0}".format(feature_importances.head(5)))
+      y_pred = clf.predict(X_test)
+      generate_classification_report(fp, "{0}-{1}".format(method_name, i), y_test, y_pred, save)
+      accuracy = metrics.accuracy_score(y_test, y_pred)
+      run_time = calculate_time(start_time)
+      save_feature_importances(feature_importances, fp, i)
 
       if save:
-        label_out = '{0}/random-forest-label-encoder-mapping-{1}.txt'.format(fp, i)
-        logger.info("Saving label encoder data at location: %s" % label_out)
-        pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
-        feature_importances.to_csv(r"{0}/random-forest-feature-importance-{1}.csv".format(fp, i))
-
-        out = ("{0}/random-forest-model-{1}.sav").format(fp, i)
-        logger.info("Saving RANDOM-FOREST-CLASSIFIER-MODEL at location: %s" % out)
-        pickle.dump(clf, open(out, 'wb'))
-
-      y_pred = clf.predict(X_test)
-      report = generate_classification_report(fp, "random-forest-{0}".format(i), y_test, y_pred, save)
-      logger.info("Random forest classifier accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
-      logger.info("Random forest classifier classification report: {0}".format(report))
-      logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
+        save_metrics(fp, method_name, mapping, accuracy, run_time, i)
+        save_model(clf, method_name, fp, i)
 
   else:
     Xy, mapping = split_data(data)
@@ -155,26 +176,21 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
 
     feature_importances = pd.DataFrame(clf.feature_importances_, index=X_train.columns,
                                        columns=['importance']).sort_values('importance', ascending=False)
-    logger.info("Feature importance: {0}".format(feature_importances.head(5)))
-    feature_importances.to_csv(r"{0}/random-forest-feature-importance.csv".format(fp))
-    if save:
-      label_out = '{0}/random-forest-label-encoder-mapping.txt'.format(fp)
-      logger.info("Saving label encoder data at location: %s" % label_out)
-      pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
-
-      logger.info("Saving RANDOM-FOREST-CLASSIFIER-MODEL at location: %s" % out)
-      pickle.dump(clf, open(out, 'wb'))
 
     y_pred = clf.predict(X_test)
-    report = generate_classification_report(fp, "random-forest", y_test, y_pred, save)
-    logger.info("Random forest classifier accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
-    logger.info("Random forest classifier classification report: {0}".format(report))
-    logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
+    generate_classification_report(fp, method_name, y_test, y_pred, save)
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+    run_time = calculate_time(start_time)
+    save_feature_importances(feature_importances, fp)
+
+    if save:
+      save_metrics(fp, method_name, mapping, accuracy, run_time)
+      save_model(clf, method_name, fp)
 
 
 def support_vector_machine_classifier(data, fp, save=False, time_series=False):
   from sklearn import svm
-  out = r"{0}/svm-model.sav".format(fp)
+  method_name = "svm"
 
   if time_series:
     for i, Xy in enumerate(split_time_series(data)):
@@ -184,21 +200,15 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
       clf = svm.LinearSVC(verbose=10)
       clf.fit(X_train, y_train)
 
-      if save:
-        label_out = '{0}/svm-label-encoder-mapping-{1}.txt'.format(fp, i)
-        logger.info("Saving label encoder data at location: %s" % label_out)
-        pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
-
-        out = ("{0}/svm-model-{1}.sav").format(fp, i)
-        logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
-        pickle.dump(clf, open(out, 'wb'))
-
       y_pred = clf.predict(X_test)
-      report = generate_classification_report(fp, "svm-{0}".format(i), y_test, y_pred, save)
+      generate_classification_report(fp, method_name, y_test, y_pred, save)
+      accuracy = metrics.accuracy_score(y_test, y_pred)
+      run_time = calculate_time(start_time)
 
-      logger.info("Support vector machine accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
-      logger.info("Support vector machine classification report:{0}".format(report))
-      logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
+      if save:
+        save_metrics(fp, method_name, mapping, accuracy, run_time)
+        save_model(clf, method_name, fp)
+
   else:
     Xy, mapping = split_data(data, normalise=True)
     X_train, X_test, y_train, y_test = Xy
@@ -208,20 +218,14 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
     clf = svm.LinearSVC(verbose=2)
     clf.fit(X_train, y_train)
 
-    if save:
-      label_out = '{0}/svm-label-encoder-mapping.txt'.format(fp)
-      logger.info("Saving label encoder data at location: %s" % label_out)
-      pd.DataFrame.from_dict(mapping, orient='index').to_csv(label_out)
-
-
-      logger.info("Saving SUPPORT-VECTOR-MACHINE-CLASSIFIER-MODEL at location: %s" % out)
-      pickle.dump(clf, open(out, 'wb'))
-
     y_pred = clf.predict(X_test)
-    report = generate_classification_report(fp, "svm", y_test, y_pred, save)
-    logger.info("Support vector machine accuracy: %s" % metrics.accuracy_score(y_test, y_pred))
-    logger.info("Support vector machine confusion matrix: {0}".format(report))
-    logger.info("Support vector machine classifier took %s seconds" % (time.time() - start_time))
+    generate_classification_report(fp, method_name, y_test, y_pred, save)
+    accuracy = metrics.accuracy_score(y_test, y_pred)
+    run_time = calculate_time(start_time)
+
+    if save:
+      save_metrics(fp, method_name, mapping, accuracy, run_time)
+      save_model(clf, method_name, fp)
 
 
 if __name__ == '__main__':
