@@ -36,24 +36,25 @@ def convert_data(data, n_steps):
   logger.info("New data shape: {0}".format(new_data.shape))
   return new_data
 
+
 def generate_train_test(data, test_size=0.3):
   from sklearn.model_selection import train_test_split
-  X = data[:,:,0:78]  # take all features except label.
-  y = data[:,:,78:79]  # last feature = label
+  X = data[:, :, 0:78]  # take all features except label.
+  y = data[:, :, 78:79]  # last feature = label
   y = y.reshape((y.shape[0], y.shape[1] * y.shape[2]))
 
   return train_test_split(X, y, test_size=test_size)
+
 
 def create_model(shape):
   # shape = 10, 78
   model = Sequential()
   model.add(LSTM(512, input_shape=(shape[0],
-                                  shape[1]),
+                                   shape[1]),
                  return_sequences=False))
   model.add(Dense(10, activation='sigmoid'))  # todo change for multiclassification
   model.compile(loss='binary_crossentropy', optimizer='adam')
   return model
-
 
 
 def train(data):
@@ -68,13 +69,11 @@ def train(data):
   # model.compile()
   print(model.summary())
 
-
   logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
 
   scores = model.evaluate(X_test, y_test, verbose=1)
   logger.info("Evaluation names: {0}".format(model.metrics_names))
   logger.info("Accuracy: {0}".format(scores[1] * 100))
-
 
 
 if __name__ == '__main__':
@@ -103,6 +102,3 @@ if __name__ == '__main__':
 
   reshaped_data = convert_data(original_dataset.to_numpy(), args.n_steps)
   train(reshaped_data)
-
-
-
