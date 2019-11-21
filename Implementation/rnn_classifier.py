@@ -64,15 +64,16 @@ def train(data):
   model = create_model((X_train.shape[1], X_train.shape[2]))
   print("X_train shape: {0}".format(X_train.shape))
   print("Y_train.shape: {0}".format(y_train.shape))
-  model.fit(X_train, y_train, epochs=2)
+  history = model.fit(X_train, y_train, epochs=2)
   # model.compile()
   print(model.summary())
 
 
   logger.info("Random forest classifier took %s seconds" % (time.time() - start_time))
 
-  scores = model.evaluate(X_test, y_test, verbose=0)
-  print("Accuracy: %.2f%%" % (scores[1] * 100))
+  scores = model.evaluate(X_test, y_test, verbose=1)
+  logger.info("Evaluation names: {0}".format(model.metrics_names))
+  logger.info("Accuracy: {0}".format(scores[1] * 100))
 
 
 
@@ -84,7 +85,7 @@ if __name__ == '__main__':
   logger.addHandler(handler)
 
   parser = argparse.ArgumentParser()
-  parser.add_argument("-f", "--file-location", help="location to files.", default="../Datasets/cleaned")
+  parser.add_argument("-f", "--file-location", help="location to files.", default=r"../../../dataset/cleaned")
   parser.add_argument("-o", "--out", help="out folder path", default="out/")
   parser.add_argument("-n", "--n-steps", help="number of steps per one block", default=10)
 
