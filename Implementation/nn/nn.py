@@ -7,15 +7,15 @@ def create_lstm_model(window_size,
                       activation):
   lstm_input = Input(shape=(window_size - 1, feature_size))
 
-  lstm_model = LSTM(8, activation=activation, return_sequences=False)(lstm_input)
+  lstm_model = LSTM(256, activation=activation, return_sequences=False)(lstm_input)
   return Model(inputs=lstm_input, outputs=lstm_model)
 
 
 def create_label_input_model(feature_size,
                              activation):
-  label_input = Input(shape=(1, feature_size))
+  label_input = Input(shape=(feature_size,))
 
-  label_input_model = Dense(8, activation=activation)(label_input)
+  label_input_model = Dense(128, activation=activation)(label_input)
   return Model(inputs=label_input, outputs=label_input_model)
 
 
@@ -33,7 +33,8 @@ def create_model(shape,
 
   combined_model = concatenate([label_input_model.output, lstm_model.output])
 
-  connected_model = Dense(256, activation=activation)(combined_model)
+  connected_model = Dense(512, activation=activation)(combined_model)
+  connected_model = Dense(256, activation=activation)(connected_model)
   connected_model = Dense(num_classes, activation=final_activation)(connected_model)
 
   return Model(inputs=[lstm_model.input, label_input_model.input],
