@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
+from keras.callbacks import ModelCheckpoint
+
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
 logging.basicConfig(filename=r"out/rnn-log.log",  # todo fix this
@@ -23,7 +25,7 @@ logger.setLevel(logging.INFO)
 
 from process_data import read_files, drop_columns, sort_time
 from classifier import save_model, label_encode_class
-from nn.nn import create_model
+from nn.nn import create_model, create_mlp
 
 
 # 2d rows vs features = 20000, 80
@@ -111,43 +113,57 @@ def train(data,
                                                          num_classes=num_classes,
                                                          test_size=test_size)
 
-  model = create_model(shape=(window_size, X_train.shape[1]),
-                       activation=activation,
-                       final_activation=final_activation,
-                       num_classes=num_classes)
-
-  model.compile(loss=loss,
-                optimizer=optimiser,
-                metrics=metrics)
-
-  logger.info(model.summary())
-
   steps_per_epoch = X_train.shape[0] / batch_size
   validation_steps = X_test.shape[0] / batch_size
 
   start_time = time.time()
-  history = model.fit_generator(generator=yield_sliding_window_data(data=(X_train, y_train),
-                                                                    window_size=window_size),
-                                epochs=epochs,
-                                validation_data=yield_sliding_window_data(data=(X_test, y_test),
-                                                                          window_size=window_size),
-                                steps_per_epoch=steps_per_epoch,
-                                validation_steps=validation_steps)
+
+  filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
+  checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+
+  lstm = True  # TODO edit this variable to make it more reusable but i am lazy.
+  if lstm:
+    model = create_model(shape=(window_size, X_train.shape[1]),
+                       activation=activation,
+                       final_activation=final_activation,
+                       num_classes=num_classes)
+
+    model.compile(loss=loss,
+                  optimizer=optimiser,
+                  metrics=metrics)
+
+    logger.info(model.summary())
+
+    history = model.fit_generator(generator=yield_sliding_window_data(data=(X_train, y_train),
+                                                                      window_size=window_size),
+                                  epochs=epochs,
+                                  validation_data=yield_sliding_window_data(data=(X_test, y_test),
+                                                                            window_size=window_size),
+                                  steps_per_epoch=steps_per_epoch,
+                                  validation_steps=validation_steps,
+                                  callbacks=[checkpoint])
+  else:  # for creating pretrained dense network
+    model = create_mlp(feature_size=X_train.shape[1],
+                                 num_classes=num_classes,
+                                 activation=activation,
+                                 final_activation=final_activation)
+    model.compile(loss=loss,
+                optimizer=optimiser,
+                metrics=metrics)
+
+    logger.info(model.summary())
+    history = model.fit(X_train, y_train,
+                        callbacks=[checkpoint],
+                        epochs=epochs,
+                        validation_data=(X_test, y_test))
+
+
 
   plot_history(history, fp, save)
 
-  logger.info("Model took %s seconds to train" % (time.time() - start_time))
+  run_time = time.time() - start_time
+  logger.info("Model took %s seconds to train" % (run_time))
 
-
-
-  if save:
-    accuracy = history.history['val_accuracy']
-    metrics_out = '{0}/{1}-metrics.txt'.format(fp, "lstm")
-    metrics_dict = {'accuracy': accuracy,
-                    'run-time': time}
-    pd.DataFrame.from_dict(metrics_dict, orient='index').to_csv(metrics_out)
-
-    save_model(model, "lstm", fp)
 
 def one_hot_encode_data(label):
   ohe = OneHotEncoder()
@@ -185,6 +201,7 @@ if __name__ == '__main__':
   num_classes = OHC_Label.shape[1]
   for i in range(num_classes):
     original_dataset[i] = OHC_Label[:, i]
+    original_dataset[i] = OHC_Label[:, i]
 
   train(original_dataset.to_numpy(),
         args.out,
@@ -192,6 +209,6 @@ if __name__ == '__main__':
         save=True,
         metrics=['accuracy'],
         window_size=args.n_steps,
-        epochs=2,
+        epochs=100,
         final_activation='sigmoid',
         loss='binary_crossentropy')
