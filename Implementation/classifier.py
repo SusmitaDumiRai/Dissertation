@@ -24,6 +24,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 from process_data import read_files, normalise_data, sort_time
+from preprocess.balance import sample_multiple_labels
 
 def make_dir(path):
   if not os.path.exists(path):
@@ -58,11 +59,19 @@ def split_data(data, test_size=0.3, normalise=False):
     data[inputs] = normalise_data(data[inputs])
 
   X = data[inputs]
+
   y, mapping = label_encode_class(data[output])
   logger.info("Y/Output variable {0} with shape {1}".format(output, y.shape))
   logger.info("X/Input variables {0} with shape {1}".format(inputs, X.shape))
   logger.info("Train vs Test split: {0}-{1}".format(1 - test_size, test_size))
-  return train_test_split(X, y, test_size=test_size), mapping  # 70% training and 30% test
+
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
+
+  merged_train = X_train
+  merged_train['Label'] = y_train.tolist()
+
+  resampled_train = sample_multiple_labels(merged_train, benign=mapping['Benign'])
+  return resampled_train[inputs], X_test, resampled_train[output], y_test, mapping  # 70% training and 30% test
 
 
 
@@ -166,8 +175,8 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
         save_model(clf, method_name, fp, i)
 
   else:
-    Xy, mapping = split_data(data)
-    X_train, X_test, y_train, y_test = Xy
+    # Xy, mapping =
+    X_train, X_test, y_train, y_test, mapping = split_data(data)
 
     logger.info("Random forest classifier -- initialised")
     start_time = time.time()
@@ -210,8 +219,7 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
         save_model(clf, method_name, fp)
 
   else:
-    Xy, mapping = split_data(data, normalise=True)
-    X_train, X_test, y_train, y_test = Xy
+    X_train, X_test, y_train, y_test, mapping = split_data(data, normalise=True)
 
     logger.info("Support vector machine classifier -- initialised")
     start_time = time.time()
@@ -245,5 +253,8 @@ if __name__ == '__main__':
   original_dataset = read_files([args.file_location], clean_data=False)  # todo remove hardcode
 
   original_dataset = sort_time(original_dataset)
-  support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
+  # TODO TIME SERIES CURRENTLY UNSUPPORTED FOR IMBALANCED DATA.
+  # support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
   random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=False)
+
+  pass
