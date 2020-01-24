@@ -1,0 +1,4 @@
+lstm
+
+lstm: 64 + dense: 32 = 83%
+lstm: 256 + dense: 256 = 

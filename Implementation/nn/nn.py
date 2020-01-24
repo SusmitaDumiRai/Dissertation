@@ -7,20 +7,28 @@ def create_lstm_model(window_size,
                       activation):
   lstm_input = Input(shape=(window_size - 1, feature_size))
 
-  lstm_model = LSTM(64, activation=activation, return_sequences=False)(lstm_input)
+  lstm_model = LSTM(256, activation=activation, return_sequences=False)(lstm_input)
   return Model(inputs=lstm_input, outputs=lstm_model)
 
 
 def create_mlp(feature_size,
-               activation):
+               activation,
+               num_classes,
+               final_activation):
   label_input = Input(shape=(feature_size,))
 
-  label_input_model = Dense(64, activation=activation)(label_input)
-  return Model(inputs=label_input, outputs=label_input_model)
+  next_layer = Dense(1024, activation=activation)(label_input)
+  # next_layer = Dropout(0.5)(label_input_model)
+  next_layer = Dense(512, activation=activation)(next_layer)
+  # next_layer = Dropout(0.5)(next_layer)
+  next_layer = Dense(256, activation=activation)(next_layer)
+  output = Dense(num_classes, activation=final_activation)(next_layer)
+  return Model(inputs=label_input, outputs=output)
 
 
 def load_dense_model():
-  pretrained_model = load_model(r"C:\Users\kxd\Documents\Thesis_Susi\Dissertation\Implementation\models\dense-256-0.76.hdf5")
+  pretrained_model = load_model("/home/csdog/RNN/Dissertation/Implementation/tmp/merged-dense/dense-256-01-0.85.hdf5")
+  # pretrained_model = load_model(r"C:\Users\kxd\Documents\Thesis_Susi\Dissertation\Implementation\models\dense-256-0.76.hdf5")
   pretrained_model.name = "pretrained_dense_model_1"
 
   for layer in pretrained_model.layers:
@@ -56,7 +64,7 @@ def create_model(shape,
 
   combined_model = concatenate([label_input_model.output, lstm_model.output])
 
-  connected_model = Dense(32, activation=activation)(combined_model)
+  connected_model = Dense(256, activation=activation)(combined_model)
   # connected_model = Dense(256, activation=activation)(connected_model)
   connected_model = Dense(num_classes, activation=final_activation)(connected_model)
 

@@ -7,11 +7,12 @@ import time
 import logging
 import argparse
 import pandas as pd
+import numpy as np
 
 from sklearn import metrics
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import TimeSeriesSplit
-
+from sklearn.utils import class_weight
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
 logging.basicConfig(filename=r"out/classifier-log.log",  # todo fix this
@@ -168,10 +169,17 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
   else:
     Xy, mapping = split_data(data)
     X_train, X_test, y_train, y_test = Xy
+    class_weights = class_weight.compute_class_weight("balanced", np.unique(y_train), y_train)
+    class_weights = dict(enumerate(class_weights))
+
+    print(class_weights)
+    class_weights_out = ("{0}/random-forest-class-weights.csv").format(fp)
+    pd.DataFrame.from_dict(class_weights, orient='index').to_csv(class_weights_out)
+    logger.info("Saving class weights at location: {0}".format(class_weights_out))
 
     logger.info("Random forest classifier -- initialised")
     start_time = time.time()
-    clf = RandomForestClassifier(n_estimators=100, verbose=2)
+    clf = RandomForestClassifier(n_estimators=100, verbose=2, class_weight=class_weights)
     clf.fit(X_train, y_train)
 
     feature_importances = pd.DataFrame(clf.feature_importances_, index=X_train.columns,
@@ -245,5 +253,5 @@ if __name__ == '__main__':
   original_dataset = read_files([args.file_location], clean_data=False)  # todo remove hardcode
 
   original_dataset = sort_time(original_dataset)
-  support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
+  # support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
   random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=False)

@@ -9,8 +9,10 @@ import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.utils import class_weight
 
 from keras.callbacks import ModelCheckpoint
+from keras.optimizers import SGD, Adam
 
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
@@ -104,7 +106,7 @@ def train(data,
           optimiser='adam',
           epochs=10,
           metrics=None,
-          batch_size=30,
+          batch_size=1024,
           test_size = 0.3):
 
   print(loss)
@@ -112,6 +114,14 @@ def train(data,
   X_train, X_test, y_train, y_test = generate_train_test(data,
                                                          num_classes=num_classes,
                                                          test_size=test_size)
+
+  y_ints = [y.argmax() for y in y_train]
+  class_weights = class_weight.compute_class_weight('balanced', np.unique(y_ints), y_ints)
+  class_weights = dict(enumerate(class_weights))
+  print(class_weights)
+  class_weights_out = ("{0}/neural-network-class-weights.csv").format(fp)
+  pd.DataFrame.from_dict(class_weights, orient='index').to_csv(class_weights_out)
+  logger.info("Saving class weights at location: {0}".format(class_weights_out))
 
   steps_per_epoch = X_train.shape[0] / batch_size
   validation_steps = X_test.shape[0] / batch_size
@@ -121,7 +131,7 @@ def train(data,
   filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
   checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
-  lstm = True  # TODO edit this variable to make it more reusable but i am lazy.
+  lstm = False  # TODO edit this variable to make it more reusable but i am lazy.
   if lstm:
     model = create_model(shape=(window_size, X_train.shape[1]),
                        activation=activation,
@@ -141,21 +151,27 @@ def train(data,
                                                                             window_size=window_size),
                                   steps_per_epoch=steps_per_epoch,
                                   validation_steps=validation_steps,
-                                  callbacks=[checkpoint])
+                                  callbacks=[checkpoint],
+                                  class_weight=class_weights)
   else:  # for creating pretrained dense network
+    # todo fix
+    optimiser = Adam(lr=0.01)
+    logger.info("Creating new Dense model for transfer learning")
     model = create_mlp(feature_size=X_train.shape[1],
                                  num_classes=num_classes,
                                  activation=activation,
                                  final_activation=final_activation)
     model.compile(loss=loss,
                 optimizer=optimiser,
-                metrics=metrics)
+                #metrics=metrics,
+                weighted_metrics=metrics)
 
     logger.info(model.summary())
     history = model.fit(X_train, y_train,
                         callbacks=[checkpoint],
                         epochs=epochs,
-                        validation_data=(X_test, y_test))
+                        validation_data=(X_test, y_test),
+                        class_weight=class_weights)
 
 
 
@@ -209,6 +225,6 @@ if __name__ == '__main__':
         save=True,
         metrics=['accuracy'],
         window_size=args.n_steps,
-        epochs=100,
-        final_activation='sigmoid',
-        loss='binary_crossentropy')
+        epochs=25)
+        #final_activation='sigmoid',
+        #loss='binary_crossentropy')
