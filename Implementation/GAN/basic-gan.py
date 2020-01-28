@@ -131,4 +131,5 @@ def sample_images(epoch, generator):
   plt.close()
 
 
-train_main()
+if __name__ == '__main__':
+  train_main()
