@@ -231,6 +231,4 @@ if __name__ == '__main__':
         save=True,
         metrics=['accuracy'],
         window_size=args.n_steps,
-        epochs=100,
-        final_activation='sigmoid',
-        loss='binary_crossentropy')
+        epochs=100)
