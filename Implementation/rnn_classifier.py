@@ -114,7 +114,8 @@ def train(data,
   print(loss)
 
   X, y = split_data(data, num_classes=num_classes)
-  print("Shape of X: " + X.shape[0])
+  print("Shape of X: {0}".format(X.shape[1]))
+
 
 
   # steps_per_epoch = X_train.shape[0] / batch_size
