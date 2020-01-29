@@ -35,6 +35,7 @@ def single_split(X, y, test_size):
   from sklearn.model_selection import train_test_split
   return train_test_split(X, y, test_size=test_size)
 
+
 # 2d rows vs features = 20000, 80
 def split_data(data, num_classes):
   x_y_split = data.shape[1] - num_classes
@@ -43,6 +44,7 @@ def split_data(data, num_classes):
   y = data[:, x_y_split:]  # last feature = label
 
   return X, y
+
 
 def yield_sliding_window_data(data, window_size):
   X, y = data
@@ -63,7 +65,7 @@ def yield_sliding_window_data(data, window_size):
       starting_row = i - window_size
       window = X[starting_row:i, :]
 
-    lstm_window = window[0:window.shape[0] - 1, :][np.newaxis, :, :] # [:, :, np.newaxis]
+    lstm_window = window[0:window.shape[0] - 1, :][np.newaxis, :, :]  # [:, :, np.newaxis]
     window_last_element = window[window.shape[0] - 1: window.shape[0], :]
 
     if lstm_window.shape[0] == 1:
@@ -109,8 +111,7 @@ def train(X, y,
           epochs=10,
           metrics=None,
           batch_size=30,
-          test_size = 0.3):
-
+          test_size=0.3):
   print(loss)
 
   # X, y = split_data(data, num_classes=num_classes)
@@ -152,22 +153,22 @@ def train(X, y,
                                   """
   else:  # for creating pretrained dense network
     model = create_mlp(feature_size=X.shape[1],
-                                 num_classes=num_classes,
-                                 activation=activation,
-                                 final_activation=final_activation)
+                       num_classes=num_classes,
+                       activation=activation,
+                       final_activation=final_activation)
     model.compile(loss=loss,
-                optimizer=optimiser,
-                metrics=metrics)
+                  optimizer=optimiser,
+                  metrics=metrics)
 
     logger.info(model.summary())
 
-    model = KerasClassifier(build_fn=model, epochs=epochs, callbacks=[checkpoint])
+    model = KerasClassifier(build_fn=model, epochs=epochs)
 
     seed = 7
     np.random.seed(seed)
 
     kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-    results = cross_val_score(model, X, y, cv=kfold)
+    results = cross_val_score(model, X, y, cv=kfold, fit_params={'callbacks':checkpoint})
 
     print(results.mean())
   """
