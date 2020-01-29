@@ -156,31 +156,11 @@ def train(data,
                                   callbacks=[checkpoint])
                                   """
   else:  # for creating pretrained dense network
-    model = create_mlp(feature_size=X.shape[1],
-                       num_classes=num_classes,
-                       activation=activation,
-                       final_activation=final_activation)
-    model.compile(loss=loss,
-                  optimizer=optimiser,
-                  metrics=metrics)
-
-    logger.info(model.summary())
-    """
-    model = KerasClassifier(build_fn=model, epochs=epochs)
-
-    seed = 7
-    np.random.seed(seed)
-
-    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-    results = cross_val_score(model, X, y, cv=kfold, fit_params={'callbacks':checkpoint})
-
-    print(results.mean())
-  """
     scores = []
     cv = KFold(n_splits=10, random_state=42, shuffle=False)
 
     i = 0
-    fp = "{0}\{1}".format(fp, i)
+    fp = r"{0}\{1}".format(fp, i)
 
     make_dir(fp)
     filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
@@ -190,6 +170,16 @@ def train(data,
       X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
       print(X_train.shape)
       print(y_train.shape)
+
+      model = create_mlp(feature_size=X.shape[1],
+                         num_classes=num_classes,
+                         activation=activation,
+                         final_activation=final_activation)
+      model.compile(loss=loss,
+                    optimizer=optimiser,
+                    metrics=metrics)
+
+      logger.info(model.summary())
 
       history = model.fit(X_train, y_train,
                           callbacks=[checkpoint],
