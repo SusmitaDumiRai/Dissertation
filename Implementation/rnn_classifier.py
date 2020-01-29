@@ -160,7 +160,7 @@ def train(data,
     cv = KFold(n_splits=10, random_state=42, shuffle=False)
 
     i = 0
-    fp = r"{0}\{1}".format(fp, i)
+    fp = r"{0}/{1}".format(fp, i)
 
     make_dir(fp)
     filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
