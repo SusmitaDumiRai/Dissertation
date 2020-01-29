@@ -126,8 +126,6 @@ def train(data,
 
   print("Shape of y: {0}".format(y.shape))
 
-
-
   # steps_per_epoch = X_train.shape[0] / batch_size
   # validation_steps = X_test.shape[0] / batch_size
 
@@ -190,6 +188,8 @@ def train(data,
 
     for train_index, test_index in cv.split(X):
       X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+      print(X_train.shape)
+      print(y_train.shape)
 
       history = model.fit(X_train, y_train,
                           callbacks=[checkpoint],
@@ -239,7 +239,7 @@ if __name__ == '__main__':
   OHC_Label = one_hot_encode_data(label)
 
   original_dataset = drop_columns(original_dataset, ['Timestamp', 'Label'])
-  num_classes = OHC_Label.shape[0]
+  num_classes = OHC_Label.shape[1]
   for i in range(num_classes):
    original_dataset[i] = OHC_Label[:, i]
    original_dataset[i] = OHC_Label[:, i]
