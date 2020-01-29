@@ -2,7 +2,9 @@ from os.path import basename
 import glob
 import pandas as pd
 
-filenames = [i for i in glob.glob("../Datasets/cleaned/*.csv")]
+#filenames = [i for i in glob.glob(r"C:\Users\susi\Documents\aws-dataset\original\Friday-16-02-2018_TrafficForML_CICFlowMeter.csv")]
+
+filenames = ["merged_csv.csv"]
 
 # print(filenames)
 
@@ -10,6 +12,7 @@ for file in filenames:
   if file != 'merged-csv.csv':
     print("reading file: %s" % file)
     df = pd.read_csv(file)
+    df = df[df.Label.str.contains('Label') == False]  # Removes csv rows that have headers repeating
     print("dropping nans")
     df = df.dropna(how='any')
     print("Any nans?: {0}".format(df.isnull().values.any()))
@@ -24,4 +27,4 @@ for file in filenames:
     print("writing file out")
     base = basename(file)
     print("Basename: {0}".format(base))
-    df.to_csv("out/cleaned/{0}".format(base), index=False)
+    df.to_csv(r"C:\Users\susi\Documents\aws-dataset/cleaned/{0}".format(base), index=False)
