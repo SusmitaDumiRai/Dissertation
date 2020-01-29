@@ -3,7 +3,9 @@ import pandas as pd
 from process_data import read_files
 import glob
 
-filenames = [i for i in glob.glob("/home/csdog/dataset/cleaned-limited/test.csv")]
+loc = [r"/home/csdog/dataset/cleaned-limited/test.csv",
+       r"C:\Users\kxd\Documents\Thesis_Susi\data\new\cleaned-limited\bot\*.csv"]
+filenames = [i for i in glob.glob(loc[1])]
 print(filenames)
 
 for file in filenames:
