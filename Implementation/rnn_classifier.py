@@ -9,8 +9,11 @@ import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
 
 from keras.callbacks import ModelCheckpoint
+from keras.wrappers.scikit_learn import KerasClassifier
 
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
@@ -28,17 +31,18 @@ from classifier import save_model, label_encode_class
 from nn.nn import create_model, create_mlp
 
 
-# 2d rows vs features = 20000, 80
-def generate_train_test(data, num_classes, test_size):
+def single_split(X, y, test_size):
   from sklearn.model_selection import train_test_split
+  return train_test_split(X, y, test_size=test_size)
 
+# 2d rows vs features = 20000, 80
+def split_data(data, num_classes):
   x_y_split = data.shape[1] - num_classes
 
   X = data[:, 0:x_y_split]  # take all features except label.
-  y = data[:,  x_y_split:]  # last feature = label
+  y = data[:, x_y_split:]  # last feature = label
 
-  return train_test_split(X, y, test_size=test_size)
-
+  return X, y
 
 def yield_sliding_window_data(data, window_size):
   X, y = data
@@ -109,12 +113,12 @@ def train(data,
 
   print(loss)
 
-  X_train, X_test, y_train, y_test = generate_train_test(data,
-                                                         num_classes=num_classes,
-                                                         test_size=test_size)
+  X, y = split_data(data, num_classes=num_classes)
+  print("Shape of X: " + X.shape[0])
 
-  steps_per_epoch = X_train.shape[0] / batch_size
-  validation_steps = X_test.shape[0] / batch_size
+
+  # steps_per_epoch = X_train.shape[0] / batch_size
+  # validation_steps = X_test.shape[0] / batch_size
 
   start_time = time.time()
 
@@ -123,6 +127,8 @@ def train(data,
 
   lstm = False  # TODO edit this variable to make it more reusable but i am lazy.
   if lstm:
+    pass
+    """
     model = create_model(shape=(window_size, X_train.shape[1]),
                        activation=activation,
                        final_activation=final_activation,
@@ -142,8 +148,9 @@ def train(data,
                                   steps_per_epoch=steps_per_epoch,
                                   validation_steps=validation_steps,
                                   callbacks=[checkpoint])
+                                  """
   else:  # for creating pretrained dense network
-    model = create_mlp(feature_size=X_train.shape[1],
+    model = create_mlp(feature_size=X.shape[1],
                                  num_classes=num_classes,
                                  activation=activation,
                                  final_activation=final_activation)
@@ -152,6 +159,17 @@ def train(data,
                 metrics=metrics)
 
     logger.info(model.summary())
+
+    model = KerasClassifier(build_fn=model, epochs=epochs, callbacks=[checkpoint])
+
+    seed = 7
+    np.random.seed(seed)
+
+    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+    results = cross_val_score(model, X, y, cv=kfold)
+
+    print(results.mean())
+  """
     history = model.fit(X_train, y_train,
                         callbacks=[checkpoint],
                         epochs=epochs,
@@ -159,7 +177,8 @@ def train(data,
 
 
 
-  plot_history(history, fp, save)
+  # plot_history(history, fp, save)
+  """
 
   run_time = time.time() - start_time
   logger.info("Model took %s seconds to train" % (run_time))
@@ -185,7 +204,7 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   original_dataset = read_files([args.file_location], clean_data=False)
-  original_dataset = sort_time(original_dataset)
+  # original_dataset = sort_time(original_dataset)
 
   label = original_dataset['Label'].to_numpy()[:, np.newaxis]
   _, mapping = label_encode_class(label)
