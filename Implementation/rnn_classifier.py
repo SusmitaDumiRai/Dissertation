@@ -106,7 +106,7 @@ def plot_history(history, fp, save):
   plt.show()
 
 
-def train(X, y,
+def train(data,
           fp,
           num_classes,
           save=False,
@@ -121,7 +121,7 @@ def train(X, y,
           test_size=0.3):
   print(loss)
 
-  # X, y = split_data(data, num_classes=num_classes)
+  X, y = split_data(data, num_classes=num_classes)
   print("Shape of X: {0}".format(X.shape))
 
   print("Shape of y: {0}".format(y.shape))
@@ -230,23 +230,21 @@ if __name__ == '__main__':
   # original_dataset = sort_time(original_dataset)
 
   label = original_dataset['Label'].to_numpy()[:, np.newaxis]
-  OHC_Label, mapping = label_encode_class(label)
-  print(OHC_Label.shape)
-  print(np.unique(OHC_Label))
+  _, mapping = label_encode_class(label)
+
   encoder_out = '{0}/{1}-encoder-mapping.txt'.format(args.out, "lstm")
   logger.info("Saving label encoder data at location: %s" % encoder_out)
   pd.DataFrame.from_dict(mapping, orient='index').to_csv(encoder_out)
 
-  # OHC_Label = one_hot_encode_data(label)
+  OHC_Label = one_hot_encode_data(label)
 
   original_dataset = drop_columns(original_dataset, ['Timestamp', 'Label'])
-  num_classes = np.unique(OHC_Label).shape[0]
-  # num_classes = OHC_Label.shape[0]
-  # for i in range(num_classes):
-  #  original_dataset[i] = OHC_Label[:, i]
-  #  original_dataset[i] = OHC_Label[:, i]
+  num_classes = OHC_Label.shape[0]
+  for i in range(num_classes):
+   original_dataset[i] = OHC_Label[:, i]
+   original_dataset[i] = OHC_Label[:, i]
 
-  train(original_dataset.to_numpy(), OHC_Label,
+  train(original_dataset.to_numpy(),
         args.out,
         num_classes=num_classes,
         save=True,
