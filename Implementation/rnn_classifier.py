@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 
 from keras.callbacks import ModelCheckpoint
@@ -119,13 +119,12 @@ def train(X, y,
 
   print("Shape of y: {0}".format(y.shape))
 
+
+
   # steps_per_epoch = X_train.shape[0] / batch_size
   # validation_steps = X_test.shape[0] / batch_size
 
   start_time = time.time()
-
-  filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
-  checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
   lstm = False  # TODO edit this variable to make it more reusable but i am lazy.
   if lstm:
@@ -161,7 +160,7 @@ def train(X, y,
                   metrics=metrics)
 
     logger.info(model.summary())
-
+    """
     model = KerasClassifier(build_fn=model, epochs=epochs)
 
     seed = 7
@@ -172,15 +171,28 @@ def train(X, y,
 
     print(results.mean())
   """
-    history = model.fit(X_train, y_train,
-                        callbacks=[checkpoint],
-                        epochs=epochs,
-                        validation_data=(X_test, y_test))
+    scores = []
+    cv = KFold(n_splits=10, random_state=42, shuffle=False)
 
+    i = 0
+    fp = "{0}\{1}".format(fp, i)
+    filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
+    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
+    for train_index, test_index in cv.split(X):
+      X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
 
-  # plot_history(history, fp, save)
-  """
+      history = model.fit(X_train, y_train,
+                          callbacks=[checkpoint],
+                          epochs=epochs,
+                          validation_data=(X_test, y_test))
+
+      plot_history(history, fp, save)
+
+      scores.append(history.history['val_accuracy'])
+      i += 1
+
+    logger.info(np.mean(scores))
 
   run_time = time.time() - start_time
   logger.info("Model took %s seconds to train" % (run_time))
@@ -230,5 +242,4 @@ if __name__ == '__main__':
         num_classes=num_classes,
         save=True,
         metrics=['accuracy'],
-        window_size=args.n_steps,
-        epochs=100)
+        window_size=args.n_steps)
