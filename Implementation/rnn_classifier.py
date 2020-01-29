@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import logging
@@ -34,6 +35,12 @@ from nn.nn import create_model, create_mlp
 def single_split(X, y, test_size):
   from sklearn.model_selection import train_test_split
   return train_test_split(X, y, test_size=test_size)
+
+
+def make_dir(path):
+  if not os.path.exists(path):
+    logger.info("Creating directory at path: {0}".format(path))
+    os.makedirs(path)
 
 
 # 2d rows vs features = 20000, 80
@@ -176,6 +183,8 @@ def train(X, y,
 
     i = 0
     fp = "{0}\{1}".format(fp, i)
+
+    make_dir(fp)
     filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
