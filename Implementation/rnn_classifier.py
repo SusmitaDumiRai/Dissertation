@@ -163,7 +163,7 @@ def train(data,
     fp = r"{0}/{1}".format(fp, i)
 
     make_dir(fp)
-    filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
+    filepath = fp + r"/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
     checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
     for train_index, test_index in cv.split(X):
