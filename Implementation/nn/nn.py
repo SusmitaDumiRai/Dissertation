@@ -12,11 +12,18 @@ def create_lstm_model(window_size,
 
 
 def create_mlp(feature_size,
-               activation):
+               activation,
+               num_classes,
+               final_activation):
   label_input = Input(shape=(feature_size,))
 
-  label_input_model = Dense(64, activation=activation)(label_input)
-  return Model(inputs=label_input, outputs=label_input_model)
+  next_layer = Dense(64, activation=activation)(label_input)
+  # next_layer = Dropout(0.5)(label_input_model)
+  # next_layer = Dense(512, activation=activation)(next_layer)
+  # next_layer = Dropout(0.5)(next_layer)
+  # next_layer = Dense(64, activation=activation)(next_layer)
+  output = Dense(num_classes, activation=final_activation)(next_layer)
+  return Model(inputs=label_input, outputs=output)
 
 
 def load_dense_model():
