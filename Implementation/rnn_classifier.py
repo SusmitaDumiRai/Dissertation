@@ -121,7 +121,7 @@ def train(data,
   filepath = fp + r"\weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
   checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
-  lstm = True  # TODO edit this variable to make it more reusable but i am lazy.
+  lstm = False  # TODO edit this variable to make it more reusable but i am lazy.
   if lstm:
     model = create_model(shape=(window_size, X_train.shape[1]),
                        activation=activation,
