@@ -120,7 +120,6 @@ def train(data,
           batch_size=30,
           test_size=0.3):
   print(loss)
-
   X, y = split_data(data, num_classes=num_classes)
   print("Shape of X: {0}".format(X.shape))
 
@@ -160,13 +159,14 @@ def train(data,
     cv = KFold(n_splits=10, random_state=42, shuffle=False)
 
     i = 0
-    fp = r"{0}/{1}".format(fp, i)
 
-    make_dir(fp)
-    filepath = fp + r"/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
-    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
     for train_index, test_index in cv.split(X):
+      out = r"{0}/{1}".format(fp, i)
+      make_dir(out)
+      filepath = out + r"/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
+      checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+
       X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
       print(X_train.shape)
       print(y_train.shape)
@@ -215,6 +215,7 @@ if __name__ == '__main__':
   parser.add_argument("-n", "--n-steps", help="number of steps per one block", default=10, type=int)
 
   args = parser.parse_args()
+  make_dir(args.out)
 
   original_dataset = read_files([args.file_location], clean_data=False)
   # original_dataset = sort_time(original_dataset)
