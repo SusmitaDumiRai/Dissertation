@@ -186,7 +186,7 @@ def train(data,
                           epochs=epochs,
                           validation_data=(X_test, y_test))
 
-      plot_history(history, fp, save)
+      plot_history(history, out, save)
 
       scores.append(history.history['val_accuracy'])
       i += 1
