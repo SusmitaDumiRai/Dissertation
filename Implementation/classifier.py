@@ -11,6 +11,7 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import TimeSeriesSplit
+from sklearn.model_selection import KFold, StratifiedKFold
 
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
@@ -62,9 +63,8 @@ def split_data(data, test_size=0.3, normalise=False):
   logger.info("Y/Output variable {0} with shape {1}".format(output, y.shape))
   logger.info("X/Input variables {0} with shape {1}".format(inputs, X.shape))
   logger.info("Train vs Test split: {0}-{1}".format(1 - test_size, test_size))
-  return train_test_split(X, y, test_size=test_size), mapping  # 70% training and 30% test
-
-
+  # return train_test_split(X, y, test_size=test_size), mapping  # 70% training and 30% test
+  return X.to_numpy(), y, mapping, X.columns
 
 def split_time_series(data, normalise=True):
   no_of_split = 3# int((len(data) - 3) / 3)  # 67-33
@@ -166,26 +166,33 @@ def random_forest_classifier(data, fp, save=False, time_series=False):
         save_model(clf, method_name, fp, i)
 
   else:
-    Xy, mapping = split_data(data)
-    X_train, X_test, y_train, y_test = Xy
+    X, y, mapping, columns = split_data(data)
+    # X_train, X_test, y_train, y_test = Xy
 
+    cv = StratifiedKFold(n_splits=10, random_state=42, shuffle=False)
     logger.info("Random forest classifier -- initialised")
-    start_time = time.time()
-    clf = RandomForestClassifier(n_estimators=100, verbose=2)
-    clf.fit(X_train, y_train)
+    i = 0
+    for train_index, test_index in cv.split(X, y):
+      X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+      start_time = time.time()
+      clf = RandomForestClassifier(n_estimators=100, verbose=2)
+      clf.fit(X_train, y_train)
 
-    feature_importances = pd.DataFrame(clf.feature_importances_, index=X_train.columns,
-                                       columns=['importance']).sort_values('importance', ascending=False)
+      feature_importances = pd.DataFrame(clf.feature_importances_, index=columns,
+                                         columns=['importance']).sort_values('importance', ascending=False)
 
-    y_pred = clf.predict(X_test)
-    generate_classification_report(fp, method_name, y_test, y_pred, save)
-    accuracy = metrics.accuracy_score(y_test, y_pred)
-    run_time = calculate_time(start_time)
-    save_feature_importances(feature_importances, fp)
+      y_pred = clf.predict(X_test)
+      rf_out = r"{0}/{1}".format(fp, i)
+      make_dir(rf_out)
+      generate_classification_report(rf_out, method_name, y_test, y_pred, save)
+      accuracy = metrics.accuracy_score(y_test, y_pred)
+      run_time = calculate_time(start_time)
+      save_feature_importances(feature_importances, rf_out)
 
-    if save:
-      save_metrics(fp, method_name, mapping, accuracy, run_time)
-      save_model(clf, method_name, fp)
+      if save:
+        save_metrics(rf_out, method_name, mapping, accuracy, run_time)
+        save_model(clf, method_name, rf_out)
+      i += 1
 
 
 def support_vector_machine_classifier(data, fp, save=False, time_series=False):
@@ -210,22 +217,29 @@ def support_vector_machine_classifier(data, fp, save=False, time_series=False):
         save_model(clf, method_name, fp)
 
   else:
-    Xy, mapping = split_data(data, normalise=True)
-    X_train, X_test, y_train, y_test = Xy
+    X, y, mapping, _ = split_data(data, normalise=True)
+    # X_train, X_test, y_train, y_test = Xy
 
-    logger.info("Support vector machine classifier -- initialised")
-    start_time = time.time()
-    clf = svm.LinearSVC(verbose=2)
-    clf.fit(X_train, y_train)
+    cv = StratifiedKFold(n_splits=10, random_state=42, shuffle=False)
+    i = 0
+    for train_index, test_index in cv.split(X, y):
+      X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
 
-    y_pred = clf.predict(X_test)
-    generate_classification_report(fp, method_name, y_test, y_pred, save)
-    accuracy = metrics.accuracy_score(y_test, y_pred)
-    run_time = calculate_time(start_time)
+      logger.info("Support vector machine classifier -- initialised")
+      start_time = time.time()
+      clf = svm.LinearSVC(verbose=2)
+      clf.fit(X_train, y_train)
+      svm_out = r"{0}/{1}".format(fp, i)
+      make_dir(svm_out)
+      y_pred = clf.predict(X_test)
+      generate_classification_report(svm_out, method_name, y_test, y_pred, save)
+      accuracy = metrics.accuracy_score(y_test, y_pred)
+      run_time = calculate_time(start_time)
 
-    if save:
-      save_metrics(fp, method_name, mapping, accuracy, run_time)
-      save_model(clf, method_name, fp)
+      if save:
+        save_metrics(svm_out, method_name, mapping, accuracy, run_time)
+        save_model(clf, method_name, svm_out)
+      i += 1
 
 
 if __name__ == '__main__':
@@ -246,4 +260,4 @@ if __name__ == '__main__':
 
   original_dataset = sort_time(original_dataset)
   support_vector_machine_classifier(original_dataset, fp=args.out, save=True, time_series=False)
-  random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=False)
+  # random_forest_classifier(original_dataset,fp=args.out, save=True, time_series=False)
