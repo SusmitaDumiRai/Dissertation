@@ -10,9 +10,10 @@ import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import cross_val_score
 
+from keras import optimizers
 from keras.callbacks import ModelCheckpoint
 from keras.wrappers.scikit_learn import KerasClassifier
 
@@ -117,8 +118,8 @@ def train(data,
           optimiser='adam',
           epochs=10,
           metrics=None,
-          batch_size=30,
-          test_size=0.3):
+          batch_size=256,
+          test_size=0.3, y_multiclass=None):
   print(loss)
   X, y = split_data(data, num_classes=num_classes)
   print("Shape of X: {0}".format(X.shape))
@@ -156,12 +157,12 @@ def train(data,
                                   """
   else:  # for creating pretrained dense network
     scores = []
-    cv = KFold(n_splits=10, random_state=42, shuffle=False)
+    cv = StratifiedKFold(n_splits=10, random_state=42, shuffle=False)
 
     i = 0
 
 
-    for train_index, test_index in cv.split(X):
+    for train_index, test_index in cv.split(X, y_multiclass):
       out = r"{0}/{1}".format(fp, i)
       make_dir(out)
       filepath = out + r"/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
@@ -184,7 +185,21 @@ def train(data,
       history = model.fit(X_train, y_train,
                           callbacks=[checkpoint],
                           epochs=epochs,
-                          validation_data=(X_test, y_test))
+                          validation_data=(X_test, y_test),
+                          batch_size=batch_size)
+
+      print("building classification report")
+      y_pred = model.predict(X_test, batch_size=64)
+      print(y_pred.shape)
+      y_pred = np.argmax(y_pred, axis=1)
+      print(y_pred.shape)
+      print(y_test.shape)
+      y_test = np.argmax(y_test, axis=1)
+      report = classification_report(y_test, y_pred, output_dict=True)
+      report_df = pd.DataFrame(report).T
+      cf_out = r"{0}/classification-report.txt".format(out)
+      report_df.to_csv(cf_out)
+      logger.info("Saving classification report at location: {0}".format(cf_out))
 
       plot_history(history, out, save)
 
@@ -219,10 +234,11 @@ if __name__ == '__main__':
 
   original_dataset = read_files([args.file_location], clean_data=False)
   # original_dataset = sort_time(original_dataset)
+  original_dataset = original_dataset.sample(frac=1).reset_index(drop=True)
 
   label = original_dataset['Label'].to_numpy()[:, np.newaxis]
-  _, mapping = label_encode_class(label)
-
+  y_multiclass, mapping = label_encode_class(label)
+  print(y_multiclass.shape)
   encoder_out = '{0}/{1}-encoder-mapping.txt'.format(args.out, "lstm")
   logger.info("Saving label encoder data at location: %s" % encoder_out)
   pd.DataFrame.from_dict(mapping, orient='index').to_csv(encoder_out)
@@ -240,4 +256,6 @@ if __name__ == '__main__':
         num_classes=num_classes,
         save=True,
         metrics=['accuracy'],
-        window_size=args.n_steps)
+        window_size=args.n_steps,
+        y_multiclass=y_multiclass,
+        optimiser=optimizers.Adam(lr=0.0001))
