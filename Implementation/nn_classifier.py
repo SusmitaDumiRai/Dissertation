@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import pickle
 import logging
 import argparse
 
@@ -8,6 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from glob import glob
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import KFold, StratifiedKFold
@@ -31,7 +33,7 @@ logger.setLevel(logging.INFO)
 from process_data import read_files, drop_columns, sort_time
 from classifier import save_model, label_encode_class
 from nn.nn import create_model, create_mlp
-
+from ensemble import train_ensemble, load_all_models
 
 def single_split(X, y, test_size):
   from sklearn.model_selection import train_test_split
@@ -52,34 +54,6 @@ def split_data(data, num_classes):
   y = data[:, x_y_split:]  # last feature = label
 
   return X, y
-
-
-def yield_sliding_window_data(data, window_size):
-  X, y = data
-
-  for i in range(1, X.shape[0] + 1):
-    if i < window_size:
-      # case i = 1, context is index 0 therefore not needed
-      # example window size = 5, context for i = 1 -> 00001
-      # 00001, 00012, 00123, 01234
-      zero_rows = (1 * window_size) - i
-      zeros_window = np.zeros((zero_rows, X.shape[1]))
-      data_window = X[0:i, :]
-
-      window = np.vstack((zeros_window, data_window))
-
-    else:
-      # 12345, ...
-      starting_row = i - window_size
-      window = X[starting_row:i, :]
-
-    lstm_window = window[0:window.shape[0] - 1, :][np.newaxis, :, :]  # [:, :, np.newaxis]
-    window_last_element = window[window.shape[0] - 1: window.shape[0], :]
-
-    if lstm_window.shape[0] == 1:
-      pass
-    yield ([lstm_window, window_last_element], y[i - 1].reshape((1, -1)))
-
 
 def plot_history(history, fp, save):
   fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 5))
@@ -107,11 +81,10 @@ def plot_history(history, fp, save):
   plt.show()
 
 
-def train(data,
+def train(X, y,
           fp,
           num_classes,
           save=False,
-          window_size=10,
           loss='categorical_crossentropy',
           activation='relu',
           final_activation='softmax',
@@ -120,10 +93,8 @@ def train(data,
           metrics=None,
           batch_size=256,
           test_size=0.3, y_multiclass=None):
-  print(loss)
-  X, y = split_data(data, num_classes=num_classes)
-  print("Shape of X: {0}".format(X.shape))
 
+  print("Shape of X: {0}".format(X.shape))
   print("Shape of y: {0}".format(y.shape))
 
   # steps_per_epoch = X_train.shape[0] / batch_size
@@ -131,82 +102,55 @@ def train(data,
 
   start_time = time.time()
 
-  lstm = False  # TODO edit this variable to make it more reusable but i am lazy.
-  if lstm:
-    pass
-    """
-    model = create_model(shape=(window_size, X_train.shape[1]),
-                       activation=activation,
-                       final_activation=final_activation,
-                       num_classes=num_classes)
+  scores = []
+  cv = StratifiedKFold(n_splits=10, random_state=42, shuffle=False)
 
+  i = 0
+  for train_index, test_index in cv.split(X, y_multiclass):
+    out = r"{0}/{1}".format(fp, i)
+    make_dir(out)
+    filepath = out + r"/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
+    checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+
+    X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+    print(X_train.shape)
+    print(y_train.shape)
+
+    model = create_mlp(feature_size=X.shape[1],
+                       num_classes=num_classes,
+                       activation=activation,
+                       final_activation=final_activation)
     model.compile(loss=loss,
                   optimizer=optimiser,
                   metrics=metrics)
 
     logger.info(model.summary())
 
-    history = model.fit_generator(generator=yield_sliding_window_data(data=(X_train, y_train),
-                                                                      window_size=window_size),
-                                  epochs=epochs,
-                                  validation_data=yield_sliding_window_data(data=(X_test, y_test),
-                                                                            window_size=window_size),
-                                  steps_per_epoch=steps_per_epoch,
-                                  validation_steps=validation_steps,
-                                  callbacks=[checkpoint])
-                                  """
-  else:  # for creating pretrained dense network
-    scores = []
-    cv = StratifiedKFold(n_splits=10, random_state=42, shuffle=False)
+    history = model.fit(X_train, y_train,
+                        callbacks=[checkpoint],
+                        epochs=epochs,
+                        validation_data=(X_test, y_test),
+                        batch_size=batch_size)
 
-    i = 0
+    print("building classification report")
+    y_pred = model.predict(X_test, batch_size=64)
+    print(y_pred.shape)
+    y_pred = np.argmax(y_pred, axis=1)
+    print(y_pred.shape)
+    print(y_test.shape)
+    y_test = np.argmax(y_test, axis=1)
+    report = classification_report(y_test, y_pred, output_dict=True)
+    report_df = pd.DataFrame(report).T
+    cf_out = r"{0}/classification-report.txt".format(out)
+    report_df.to_csv(cf_out)
+    logger.info("Saving classification report at location: {0}".format(cf_out))
 
+    plot_history(history, out, save)
 
-    for train_index, test_index in cv.split(X, y_multiclass):
-      out = r"{0}/{1}".format(fp, i)
-      make_dir(out)
-      filepath = out + r"/weights-improvement-{epoch:02d}-{val_accuracy:.2f}.hdf5"
-      checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
+    scores.append(history.history['val_accuracy'])
+    i += 1
 
-      X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
-      print(X_train.shape)
-      print(y_train.shape)
-
-      model = create_mlp(feature_size=X.shape[1],
-                         num_classes=num_classes,
-                         activation=activation,
-                         final_activation=final_activation)
-      model.compile(loss=loss,
-                    optimizer=optimiser,
-                    metrics=metrics)
-
-      logger.info(model.summary())
-
-      history = model.fit(X_train, y_train,
-                          callbacks=[checkpoint],
-                          epochs=epochs,
-                          validation_data=(X_test, y_test),
-                          batch_size=batch_size)
-
-      print("building classification report")
-      y_pred = model.predict(X_test, batch_size=64)
-      print(y_pred.shape)
-      y_pred = np.argmax(y_pred, axis=1)
-      print(y_pred.shape)
-      print(y_test.shape)
-      y_test = np.argmax(y_test, axis=1)
-      report = classification_report(y_test, y_pred, output_dict=True)
-      report_df = pd.DataFrame(report).T
-      cf_out = r"{0}/classification-report.txt".format(out)
-      report_df.to_csv(cf_out)
-      logger.info("Saving classification report at location: {0}".format(cf_out))
-
-      plot_history(history, out, save)
-
-      scores.append(history.history['val_accuracy'])
-      i += 1
-
-    logger.info(np.mean(scores))
+  logger.info(np.mean(scores))
 
   run_time = time.time() - start_time
   logger.info("Model took %s seconds to train" % (run_time))
@@ -227,13 +171,13 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("-f", "--file-location", help="location to files.", default=r"../../../dataset/cleaned")
   parser.add_argument("-o", "--out", help="out folder path", default="out/")
-  parser.add_argument("-n", "--n-steps", help="number of steps per one block", default=10, type=int)
+  parser.add_argument("-e", "--ensemble", action="store_true")  # train ensemble
+  parser.add_argument("-p", "--multiple-model-location")  # multiple pretrained models for ensemble
 
   args = parser.parse_args()
   make_dir(args.out)
 
   original_dataset = read_files([args.file_location], clean_data=False)
-  # original_dataset = sort_time(original_dataset)
   original_dataset = original_dataset.sample(frac=1).reset_index(drop=True)
 
   label = original_dataset['Label'].to_numpy()[:, np.newaxis]
@@ -251,11 +195,24 @@ if __name__ == '__main__':
    original_dataset[i] = OHC_Label[:, i]
    original_dataset[i] = OHC_Label[:, i]
 
-  train(original_dataset.to_numpy(),
-        args.out,
-        num_classes=num_classes,
-        save=True,
-        metrics=['accuracy'],
-        window_size=args.n_steps,
-        y_multiclass=y_multiclass,
-        optimiser=optimizers.Adam(lr=0.0001))
+  X, y = split_data(original_dataset.to_numpy(), num_classes=num_classes)
+
+  if args.ensemble:
+    model_loc = glob(args.ensemble_model_location + r"/*.hdf5")
+    assert len(model_loc) >= 1  # atleast one model is required
+    pretrained_models = load_all_models(model_loc)
+    ensemble_model = train_ensemble(pretrained_models, X, y)
+
+    ensemble_out = ("{0}/{1}-{2}.sav").format(args.out, "ensemble")
+    pickle.dump(ensemble_model, open(args.out, 'wb'))
+
+    logger.info("Saving ensemble model at location {0}".format(ensemble_model))
+
+  else:
+    train(X, y,
+          args.out,
+          num_classes=num_classes,
+          save=True,
+          metrics=['accuracy'],
+          y_multiclass=y_multiclass,
+          optimiser=optimizers.Adam(lr=0.0001))
