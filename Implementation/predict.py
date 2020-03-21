@@ -6,7 +6,7 @@ import numpy as np
 from glob import glob
 from keras.models import load_model
 from process_data import read_files, drop_columns
-from ensemble_classifier import stacked_dataset, load_all_models
+from ensemble import stacked_dataset, load_all_models
 
 from sklearn.metrics import classification_report
 
@@ -16,7 +16,7 @@ def ensemble_predict(pretrained_models, ensemble_model, X):
   X_stacked = stacked_dataset(pretrained_models, X)  # produce pretrained model's prediction
 
   y_pred = ensemble_model.predict(X_stacked)  # produce final prediction using ensembles
-  print(y_pred)
+  return y_pred
 
 def nn_predict(X, y, model_paths):
   print(model_paths)
@@ -78,12 +78,15 @@ if __name__ == '__main__':
   print(y.shape)
 
   if args.ensemble:  # predict using multiple neural network models
-    model_loc = glob(args.ensemble_model_location + r"/*.hdf5")
-    assert len(model_loc) >= 1  # atleast one model is required
+    model_loc = glob(args.multiple_model_location + r"/*.hdf5")
+    assert len(model_loc) >= 2  # atleast one model is required
     pretrained_models = load_all_models(model_loc)
-    ensemble_model = load_model(args.ensemble_model_location)
+    with open(args.ensemble_model_location, 'rb') as f:
+      ensemble_model = pickle.load(f)
     # evaluate model on test set
     ensemble_y_pred = ensemble_predict(pretrained_models, ensemble_model, X)
+    u, c = np.unique(ensemble_y_pred, return_counts=True)
+    print(np.asarray((u, c)))
   elif args.neural_network:  # predict using singular neural network model
     print("neural network")
     model_loc = glob(args.model_location + r"/*.hdf5")
