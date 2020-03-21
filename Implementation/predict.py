@@ -11,6 +11,7 @@ from ensemble import stacked_dataset, load_all_models
 
 # predict using ensemble model
 def singular_ensemble_predict(X, pretrained_model_paths, ensemble_model_path):
+  print("Singular ensemble prediction")
   pretrained_models = load_all_models(pretrained_model_paths)
   with open(ensemble_model_path, 'rb') as f:
     ensemble_model = pickle.load(f)
@@ -22,6 +23,7 @@ def singular_ensemble_predict(X, pretrained_model_paths, ensemble_model_path):
 
 
 def integrated_ensemble_predict(X, model_path):
+  print("Integrated ensemble prediction")
   model = load_model(model_path)
   X = [X for _ in range(len(model.input))]
   y_pred = model.predict(X, batch_size=64)
@@ -31,7 +33,7 @@ def integrated_ensemble_predict(X, model_path):
 
 
 def nn_predict(X, model_paths):
-  print(model_paths)
+  print("Single neural network prediction")
   for model_path in model_paths:
     print(model_path)
     model = load_model(model_path)
@@ -44,6 +46,7 @@ def nn_predict(X, model_paths):
 
 
 def classic_predict(X, model_paths):
+  print("Classic prediction")
   for model_path in model_paths:
     print(model_path)
     with open(model_path, 'rb') as f:
