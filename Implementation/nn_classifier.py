@@ -178,7 +178,7 @@ if __name__ == '__main__':
   make_dir(args.out)
 
   original_dataset = read_files([args.file_location], clean_data=False)
-  original_dataset = original_dataset.sample(frac=1).reset_index(drop=True)
+  original_dataset = original_dataset.sample(frac=1).reset_index(drop=True)  # shuffle dataset
 
   label = original_dataset['Label'].to_numpy()[:, np.newaxis]
   y_multiclass, mapping = label_encode_class(label)
@@ -198,13 +198,13 @@ if __name__ == '__main__':
   X, y = split_data(original_dataset.to_numpy(), num_classes=num_classes)
 
   if args.ensemble:
-    model_loc = glob(args.ensemble_model_location + r"/*.hdf5")
-    assert len(model_loc) >= 1  # atleast one model is required
+    model_loc = glob(args.multiple_model_location + r"/*.hdf5")
+    assert len(model_loc) >= 2  # atleast two models are required
     pretrained_models = load_all_models(model_loc)
     ensemble_model = train_ensemble(pretrained_models, X, y)
 
-    ensemble_out = ("{0}/{1}-{2}.sav").format(args.out, "ensemble")
-    pickle.dump(ensemble_model, open(args.out, 'wb'))
+    ensemble_out = ("{0}/{1}.sav").format(args.out, "ensemble")
+    pickle.dump(ensemble_model, open(ensemble_out, 'wb'))
 
     logger.info("Saving ensemble model at location {0}".format(ensemble_model))
 
