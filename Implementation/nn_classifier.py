@@ -18,6 +18,7 @@ from sklearn.model_selection import cross_val_score
 from keras import optimizers
 from keras.callbacks import ModelCheckpoint
 from keras.wrappers.scikit_learn import KerasClassifier
+from keras.models import save_model
 
 formatter = '%(asctime)s [%(filename)s:%(lineno)s - %(funcName)20s()] %(levelname)s | %(message)s'
 
@@ -33,7 +34,8 @@ logger.setLevel(logging.INFO)
 from process_data import read_files, drop_columns, sort_time
 from classifier import save_model, label_encode_class
 from nn.nn import create_model, create_mlp
-from ensemble import train_ensemble, load_all_models
+from ensemble import train_ensemble_singular, load_all_models, integrated_stacked_ensemble, train_ensemble_integrated
+
 
 def single_split(X, y, test_size):
   from sklearn.model_selection import train_test_split
@@ -54,6 +56,7 @@ def split_data(data, num_classes):
   y = data[:, x_y_split:]  # last feature = label
 
   return X, y
+
 
 def plot_history(history, fp, save):
   fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 5))
@@ -93,7 +96,6 @@ def train(X, y,
           metrics=None,
           batch_size=256,
           test_size=0.3, y_multiclass=None):
-
   print("Shape of X: {0}".format(X.shape))
   print("Shape of y: {0}".format(y.shape))
 
@@ -134,10 +136,10 @@ def train(X, y,
 
     print("building classification report")
     y_pred = model.predict(X_test, batch_size=64)
-    print(y_pred.shape)
+    # print(y_pred.shape)
     y_pred = np.argmax(y_pred, axis=1)
-    print(y_pred.shape)
-    print(y_test.shape)
+    # print(y_pred.shape)
+    # print(y_test.shape)
     y_test = np.argmax(y_test, axis=1)
     report = classification_report(y_test, y_pred, output_dict=True)
     report_df = pd.DataFrame(report).T
@@ -171,7 +173,8 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("-f", "--file-location", help="location to files.", default=r"../../../dataset/cleaned")
   parser.add_argument("-o", "--out", help="out folder path", default="out/")
-  parser.add_argument("-e", "--ensemble", action="store_true")  # train ensemble
+  parser.add_argument("-s", "--singular_ensemble", action="store_true")  # train singular ensemble (logistic regression)
+  parser.add_argument("-i", "--integrated_ensemble", action="store_true")  # train integrated ensemble (neural network)
   parser.add_argument("-p", "--multiple-model-location")  # multiple pretrained models for ensemble
 
   args = parser.parse_args()
@@ -192,22 +195,34 @@ if __name__ == '__main__':
   original_dataset = drop_columns(original_dataset, ['Timestamp', 'Label'])
   num_classes = OHC_Label.shape[1]
   for i in range(num_classes):
-   original_dataset[i] = OHC_Label[:, i]
-   original_dataset[i] = OHC_Label[:, i]
+    original_dataset[i] = OHC_Label[:, i]
+    original_dataset[i] = OHC_Label[:, i]
 
   X, y = split_data(original_dataset.to_numpy(), num_classes=num_classes)
 
-  if args.ensemble:
+  if args.singular_ensemble:
     model_loc = glob(args.multiple_model_location + r"/*.hdf5")
     assert len(model_loc) >= 2  # atleast two models are required
     pretrained_models = load_all_models(model_loc)
-    ensemble_model = train_ensemble(pretrained_models, X, y)
+    singular_ensemble_model = train_ensemble_singular(pretrained_models, X, y)
 
-    ensemble_out = ("{0}/{1}.sav").format(args.out, "ensemble")
-    pickle.dump(ensemble_model, open(ensemble_out, 'wb'))
+    singular_ensemble_out = ("{0}/{1}.sav").format(args.out, "singular_ensemble")
+    pickle.dump(singular_ensemble_model, open(singular_ensemble_out, 'wb'))
 
-    logger.info("Saving ensemble model at location {0}".format(ensemble_model))
+    logger.info("Saving singular ensemble model at location {0}".format(singular_ensemble_model))
 
+  elif args.integrated_ensemble:
+    model_loc = glob(args.multiple_model_location + r"/*.hdf5")
+    assert len(model_loc) >= 2  # atleast two models are required
+    pretrained_models = load_all_models(model_loc)
+
+    integrated_ensemble_model = integrated_stacked_ensemble(pretrained_models, args.out, num_classes)
+    integrated_ensemble_model = train_ensemble_integrated(integrated_ensemble_model, X, y)
+
+    integrated_ensemble_out = ("{0}/{1}.hdf5").format(args.out, "integrated_ensemble")
+    save_model(integrated_ensemble_out)
+
+    logger.info("Saving integrated ensemble model at location {0}".format(integrated_ensemble_out))
   else:
     train(X, y,
           args.out,
