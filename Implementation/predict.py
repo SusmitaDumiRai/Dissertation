@@ -3,6 +3,7 @@ import argparse
 
 import numpy as np
 
+from glob import glob
 from keras.models import load_model
 from process_data import read_files, drop_columns
 
@@ -10,31 +11,36 @@ from sklearn.metrics import classification_report
 
 
 
-def nn_predict(X, y, model_path):
-  model = load_model(model_path)
-  model.summary()
-  y_pred = model.predict(X, batch_size=64)
-  print(y_pred)
-  y_pred = np.argmax(y_pred, axis=1)
-  u, c = np.unique(y_pred, return_counts=True)
-  print(np.asarray((u, c)))
+def nn_predict(X, y, model_paths):
+  print(model_paths)
+  for model_path in model_paths:
+    print(model_path)
+    model = load_model(model_path)
+    model.summary()
+    y_pred = model.predict(X, batch_size=64)
+    #print(y_pred)
+    y_pred = np.argmax(y_pred, axis=1)
+    u, c = np.unique(y_pred, return_counts=True)
+    print(np.asarray((u, c)))
 
-  # print(y_pred)
-  count_true = np.count_nonzero(y_pred == y[0])
-  print(count_true)
+    # print(y_pred)
+    count_true = np.count_nonzero(y_pred == y[0])
+    #print(count_true)
 
-  # print(y_pred.shape)
-  # print(y.shape)
-  # report = classification_report(y, y_pred)
-  # print(report)
+    # print(y_pred.shape)
+    # print(y.shape)
+    # report = classification_report(y, y_pred)
+    # print(report)
 
-def classic_predict(X, y, model_path):
-  with open(model_path, 'rb') as f:
-    model = pickle.load(f)
-  y_pred = model.predict(X)
-  # print(y_pred)
-  u, c = np.unique(y_pred, return_counts=True)
-  print(np.asarray((u, c)))
+def classic_predict(X, y, model_paths):
+  for model_path in model_paths:
+    print(model_path)
+    with open(model_path, 'rb') as f:
+      model = pickle.load(f)
+    y_pred = model.predict(X)
+    # print(y_pred)
+    u, c = np.unique(y_pred, return_counts=True)
+    print(np.asarray((u, c)))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -48,18 +54,20 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   data = read_files([args.data_location], clean_data=False)
-  print(data.shape)
-  # model = load_model(args.model_location)
+  #print(data.shape)
 
   y = np.full((data.shape[0],), args.label_number) # create true y of size of data
-
-  # y = data['Label'].to_numpy()
 
   data = drop_columns(data, ['Label', 'Flow ID', 'Src IP', 'Src Port','Dst IP', 'Dst Port', 'Timestamp'])
   X = data.to_numpy()
   print(X.shape)
   print(y.shape)
   if args.neural_network:
-    nn_predict(X, y, args.model_location)
+    print("neural network")
+    model_loc = glob(args.model_location + r"/*.hdf5")
+    assert len(model_loc) >= 1
+    nn_predict(X, y, model_loc)
   else:
-    classic_predict(X, y, args.model_location)
+    model_loc = glob(args.model_location + r"/*.sav")
+    assert len(model_loc) >= 1
+    classic_predict(X, y, model_loc)
