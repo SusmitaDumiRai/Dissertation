@@ -56,7 +56,7 @@ def integrated_stacked_ensemble(models, out, num_classes):
   # concatenate merge output from each model
   ensemble_outputs = [model.output for model in models]
   merge = concatenate(ensemble_outputs)
-  hidden = Dense(10, activation='relu')(merge)
+  hidden = Dense(256, activation='relu')(merge)
   output = Dense(num_classes, activation='softmax')(hidden)
   model = Model(inputs=ensemble_visible, outputs=output)
   # plot graph of ensemble

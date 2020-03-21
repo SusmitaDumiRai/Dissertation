@@ -206,10 +206,10 @@ if __name__ == '__main__':
     pretrained_models = load_all_models(model_loc)
     singular_ensemble_model = train_ensemble_singular(pretrained_models, X, y)
 
-    singular_ensemble_out = ("{0}/{1}.sav").format(args.out, "singular_ensemble")
+    singular_ensemble_out = ("{0}/{1}.sav").format(args.out, "singular-ensemble")
     pickle.dump(singular_ensemble_model, open(singular_ensemble_out, 'wb'))
 
-    logger.info("Saving singular ensemble model at location {0}".format(singular_ensemble_model))
+    logger.info("Saving singular ensemble model at location {0}".format(singular_ensemble_out))
 
   elif args.integrated_ensemble:
     model_loc = glob(args.multiple_model_location + r"/*.hdf5")
@@ -217,10 +217,10 @@ if __name__ == '__main__':
     pretrained_models = load_all_models(model_loc)
 
     integrated_ensemble_model = integrated_stacked_ensemble(pretrained_models, args.out, num_classes)
-    integrated_ensemble_model = train_ensemble_integrated(integrated_ensemble_model, X, y)
+    integrated_ensemble_model = train_ensemble_integrated(integrated_ensemble_model, X, y, epochs=1)
 
-    integrated_ensemble_out = ("{0}/{1}.hdf5").format(args.out, "integrated_ensemble")
-    save_model(integrated_ensemble_out)
+    integrated_ensemble_out = ("{0}/{1}.hdf5").format(args.out, "integrated-ensemble")
+    integrated_ensemble_model.save(integrated_ensemble_out)
 
     logger.info("Saving integrated ensemble model at location {0}".format(integrated_ensemble_out))
   else:
