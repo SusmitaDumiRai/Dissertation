@@ -1,4 +1,0 @@
-,0
-Benign,0
-DoS attacks-Hulk,1
-DoS attacks-SlowHTTPTest,2

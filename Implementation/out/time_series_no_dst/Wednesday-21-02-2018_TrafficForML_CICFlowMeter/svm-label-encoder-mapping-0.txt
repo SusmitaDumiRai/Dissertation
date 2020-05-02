@@ -1,4 +1,0 @@
-,0
-Benign,0
-DDOS attack-HOIC,1
-DDOS attack-LOIC-UDP,2

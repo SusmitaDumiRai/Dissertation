@@ -1,5 +1,0 @@
-,0
-Benign,0
-Brute Force -Web,1
-Brute Force -XSS,2
-SQL Injection,3

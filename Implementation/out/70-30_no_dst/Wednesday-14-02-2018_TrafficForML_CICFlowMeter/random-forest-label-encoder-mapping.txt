@@ -1,4 +1,0 @@
-,0
-Benign,0
-FTP-BruteForce,1
-SSH-Bruteforce,2
