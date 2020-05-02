@@ -91,6 +91,21 @@ def normalise_data(data):
   return pd.DataFrame(values_scaled, columns=list(data))
 
 
+def drop_columns(data, columns):
+  for column in columns:
+    data.drop(column, axis=1, inplace=True)
+
+  return data
+
+def sort_time(data):
+  logger.info("Data is being sorted by time")
+
+  pd.plotting.register_matplotlib_converters()
+  data['Timestamp'] = pd.to_datetime(data['Timestamp'], format="%d/%m/%Y %H:%M:%S")
+  return data.sort_values(['Timestamp'], ascending=[True]).reset_index(drop=True)
+
+
+
 if __name__ == "__main__":
   handler = logging.StreamHandler(sys.stdout)
   handler.setLevel(logging.INFO)

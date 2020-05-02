@@ -1,9 +1,10 @@
 import glob
 import pandas as pd
+import sys
 
-filenames = [i for i in glob.glob("../Datasets/*.csv")]
+filenames = [i for i in glob.glob("{0}/*.csv".format(sys.argv[1]))]
 
-# print(filenames)
-
+print(filenames)
+print("Number of files: {0}".format(len(filenames)))
 combined_csv = pd.concat([pd.read_csv(f) for f in filenames])
-combined_csv.to_csv("merged_csv.csv", index=False)
+combined_csv.to_csv("{0}/merged-csv.csv".format(sys.argv[1]), index=False)
