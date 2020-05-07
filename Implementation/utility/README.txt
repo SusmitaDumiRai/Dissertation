@@ -1,1 +1,0 @@
-Files that are used to either read the data or to visualise.
