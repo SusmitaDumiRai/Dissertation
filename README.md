@@ -7,6 +7,7 @@ Three distinct models are used for the final comparison: random forest, support 
 
 This project also performed cyber attacks in an air-gapped, safe environment however the code (or tutorial) is not in this repository.
 
+Overall project result: 94%
 #### Dataset
 The dataset used for this project is a collaboration between researchers that produced "a realistic cyber defense dataset". The dataset contains labelled statistical bi-directional flow data of multiple cyber attacks such as denial of service. The original PCAP files are also available.
 
